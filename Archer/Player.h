@@ -33,6 +33,7 @@ private:
 
 	int m_dimension{ 16 };
 	int m_lastPlatformCollision{ 0 };
+	int m_currentPlatform{ 0 };
 
 	const float m_lowestPos{ 600.0f };
 	const float m_scale{ 2.0f };
@@ -42,6 +43,7 @@ private:
 	const float m_jumpSpeed{ 1.0f };
 	const float m_dashCooldown{ 2.0f };
 	const float m_dashLength{ 0.5f };
+	const float m_maxFallSpeed{ 0.6f };
 
 	sf::Vector2f m_movement{ 0.0f, 0.0f };
 

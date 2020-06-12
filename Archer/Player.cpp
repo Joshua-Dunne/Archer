@@ -10,7 +10,7 @@ Player::Player(std::vector<Platform*>& t_platforms) :
 	m_currentAnimation = &m_idle;
 
 	m_animSprite.setOrigin(8.0f, 8.0f); // all sprites are 16x16
-	m_animSprite.setPosition(sf::Vector2f{ 200.0f, 50.0f });
+	m_animSprite.setPosition(sf::Vector2f{ 400.0f, 50.0f });
 	m_animSprite.setScale(m_scale, m_scale);
 
 	m_hitbox.setSize(sf::Vector2f{ 16.0f, 16.0f });
@@ -231,11 +231,14 @@ void Player::walkHandling(sf::Time dt)
 
 void Player::stompHandling(sf::Time dt)
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && m_jumping && m_movement.y > 0.1f && !m_dashing)
+	if (!m_stomping)
 	{
-		m_movement.y = m_jumpSpeed;
-		m_movement.x = 0.0f;
-		m_stomping = true;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && (m_jumping && m_movement.y > 0.1f && !m_dashing))
+		{
+			m_movement.y = m_jumpSpeed / 2.0f;
+			m_movement.x = 0.0f;
+			m_stomping = true;
+		}
 	}
 }
 
@@ -261,6 +264,12 @@ void Player::idleHandling(sf::Time dt)
 
 void Player::movementHandling(sf::Time dt)
 {
+
+	/*if (m_movement.y > m_maxFallSpeed)
+	{
+		m_movement.y = m_maxFallSpeed;
+	}*/
+
 	if (!m_dashing || (m_dashing && m_movement.y < 0.0f))
 		m_animSprite.move(m_movement.x * dt.asMilliseconds(), m_movement.y * dt.asMilliseconds());
 	else
@@ -269,7 +278,17 @@ void Player::movementHandling(sf::Time dt)
 
 void Player::collisionHandling(sf::Time dt)
 {
-	if (m_jumping)
+	if (!m_jumping)
+	{	// we will need to check to see if the player isn't currently jumping
+		// or currently dashing to see if the player can fall once more
+		if (m_platforms[m_lastPlatformCollision]->fallenOff(m_hitbox))
+		{ // if the player fell off, show it
+			m_jumping = true;
+			m_movement.y = 0.1f;
+		}
+	}
+
+	if (m_movement.y >= 0.0f && m_jumping) // if the player is falling and mid-jump
 	{
 		m_lastPlatformCollision = 0; // start back at 0 for the last platform checked for collision
 
@@ -294,24 +313,6 @@ void Player::collisionHandling(sf::Time dt)
 			m_lastPlatformCollision++; // increase the number of platforms checked
 		}
 	}
-
-	
-
-	if (!m_jumping && !m_dashing)
-	{	// we will need to check to see if the player isn't currently jumping
-		// or currently dashing to see if the player can fall once more
-		bool notAbovePlatform{ false };
-
-		if (m_platforms[m_lastPlatformCollision]->fallenOff(m_hitbox))
-			notAbovePlatform = true;
-		
-
-		if (notAbovePlatform)
-		{
-			m_jumping = true;
-			m_movement.y = 0.1f;
-		}
-	}
 }
 
 void Player::update(sf::Time dt)
@@ -327,14 +328,13 @@ void Player::update(sf::Time dt)
 	if (m_animSprite.getPosition().y > m_lowestPos)
 	{
 		m_jumping = true;
-		m_stomping = false;
 		m_movement.y = 0.1f;
-		m_animSprite.setPosition(200.0f, 50.0f);
+		m_animSprite.setPosition(400.0f, 50.0f);
 	}
 
-	collisionHandling(dt);
-
 	m_animSprite.play(*m_currentAnimation);
+
+	collisionHandling(dt);
 
 	movementHandling(dt);
 

@@ -12,7 +12,7 @@ Game::Game() : m_window(sf::VideoMode(800, 600), "Text Twist")
 	m_instructions.setFont(m_font);
 	m_instructions.setCharacterSize(16u);
 	m_instructions.setString("Left/Right Arrow: Move Left/Right\nSpace: Jump\nShift: Dash\nDown Arrow (while mid-air): Stomp");
-	m_instructions.setPosition(sf::Vector2f{ 250.0f, 500.0f });
+	m_instructions.setPosition(sf::Vector2f{ 250.0f, 525.0f });
 
 	if (!m_bgOne.loadFromFile("./resources/sprites/forest/bg/background_B_layer_1.png"))
 	{
@@ -39,8 +39,10 @@ Game::Game() : m_window(sf::VideoMode(800, 600), "Text Twist")
 	m_layers.push_back(new Background(m_bgThree, sf::Vector2f{ -200.0f, 0 }));
 	m_layers.push_back(new Background(m_bgFour, sf::Vector2f{ -200.0f, 0 }));
 
-	m_platforms.push_back(new Platform(sf::Vector2f{ 600.0f, 450.0f }, 1.0f));
-	m_platforms.push_back(new Platform(sf::Vector2f{ 200.0f, 450.0f }, 1.0f));
+	m_platforms.push_back(new Platform(sf::Vector2f{ 150.0f, 250.0f }, 1.0f));
+	m_platforms.push_back(new Platform(sf::Vector2f{ 650.0f, 250.0f }, 1.0f));
+
+	m_platforms.push_back(new Platform(sf::Vector2f{ 400.0f, 450.0f }, 2.0f));
 
 	m_player = new Player(m_platforms);
 }

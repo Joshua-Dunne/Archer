@@ -52,19 +52,21 @@ private:
 	bool m_jumping{ false };
 	bool m_stomping{ false };
 	bool m_dashing{ false };
+	bool m_fell{ false };
 
 	sf::Time m_dashCounter;
 
 	std::vector<Platform*> m_platforms;
 
 	void setupAnimations();
-	void dashHandling(sf::Time dt);
-	void jumpHandling(sf::Time dt);
-	void walkHandling(sf::Time dt);
-	void stompHandling(sf::Time dt);
-	void idleHandling(sf::Time dt);
-	void movementHandling(sf::Time dt);
-	void collisionHandling(sf::Time dt);
+	void dashHandling(sf::Time& dt);
+	void jumpHandling(sf::Time& dt);
+	void walkHandling(sf::Time& dt);
+	void stompHandling(sf::Time& dt);
+	void idleHandling(sf::Time& dt);
+	void movementHandling(sf::Time& dt);
+	void collisionHandling(sf::Time& dt);
+	
 
 public:
 	void update(sf::Time dt);
@@ -73,6 +75,9 @@ public:
 	inline bool isMoving() const { if (m_movement.x != 0.0f) { return true; } return false; };
 	inline float movingDir() const { return m_movement.x; };
 	inline sf::Vector2f getPosition() const { return m_animSprite.getPosition(); };
+	inline bool isDashing() const { return m_dashing; };
+	inline bool hasFell() const { return m_fell; };
+	void fallHandling();
 };
 
 #endif

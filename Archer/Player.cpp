@@ -23,7 +23,9 @@ Player::Player(std::vector<Platform*>& t_platforms) :
 	m_movement.y = 0.1f;
 }
 
-
+/// <summary>
+/// Initialize animations and frames
+/// </summary>
 void Player::setupAnimations()
 {
 	if (!m_walkingTex.loadFromFile("./resources/sprites/herochar_run_anim_strip_6.png"))
@@ -84,7 +86,11 @@ void Player::setupAnimations()
 	}
 }
 
-void Player::dashHandling(sf::Time dt)
+/// <summary>
+/// Handle how dashing works and what buttons use it
+/// </summary>
+/// <param name="dt">delta time</param>
+void Player::dashHandling(sf::Time& dt)
 {
 	m_dashCounter += dt;
 
@@ -139,7 +145,11 @@ void Player::dashHandling(sf::Time dt)
 	}
 }
 
-void Player::jumpHandling(sf::Time dt)
+/// <summary>
+/// Handle jumping and what buttons use it
+/// </summary>
+/// <param name="dt">delta time</param>
+void Player::jumpHandling(sf::Time& dt)
 {
 	if (m_jumping && !m_dashing)
 	{
@@ -150,7 +160,7 @@ void Player::jumpHandling(sf::Time dt)
 		m_movement.y += m_gravity;
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !m_jumping)
+	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::W)) && !m_jumping)
 	{
 		m_jumping = true;
 		m_movement.y = -m_jumpSpeed;
@@ -193,11 +203,15 @@ void Player::jumpHandling(sf::Time dt)
 	}
 }
 
-void Player::walkHandling(sf::Time dt)
+/// <summary>
+/// Handle walking animations
+/// </summary>
+/// <param name="dt">delta time</param>
+void Player::walkHandling(sf::Time& dt)
 {
 	m_animSprite.setFrameTime(sf::seconds(0.1f));
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !m_stomping && !m_dashing)
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && !m_stomping && !m_dashing)
 	{
 		if (!m_jumping)
 		{
@@ -208,7 +222,7 @@ void Player::walkHandling(sf::Time dt)
 		m_noKeyPressed = false;
 		m_walkedLeft = true;
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && !m_stomping && !m_dashing)
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && !m_stomping && !m_dashing)
 	{
 		if (!m_jumping)
 		{
@@ -221,11 +235,15 @@ void Player::walkHandling(sf::Time dt)
 	}
 }
 
-void Player::stompHandling(sf::Time dt)
+/// <summary>
+/// Handle stomping and what buttons use it
+/// </summary>
+/// <param name="dt">delta time</param>
+void Player::stompHandling(sf::Time& dt)
 {
 	if (!m_stomping)
 	{
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && (m_jumping && m_movement.y > 0.1f && !m_dashing))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && (m_jumping && m_movement.y > 0.1f && !m_dashing))
 		{
 			m_movement.y = m_jumpSpeed / 2.0f;
 			m_movement.x = 0.0f;
@@ -234,7 +252,11 @@ void Player::stompHandling(sf::Time dt)
 	}
 }
 
-void Player::idleHandling(sf::Time dt)
+/// <summary>
+/// Handle idle animations
+/// </summary>
+/// <param name="dt">delta time</param>
+void Player::idleHandling(sf::Time& dt)
 {
 	// if no key was pressed stop the animation
 	if (m_noKeyPressed && !m_jumping && !m_dashing)
@@ -254,7 +276,11 @@ void Player::idleHandling(sf::Time dt)
 	}
 }
 
-void Player::movementHandling(sf::Time dt)
+/// <summary>
+/// Handle movement from keys
+/// </summary>
+/// <param name="dt">delta time</param>
+void Player::movementHandling(sf::Time& dt)
 {
 
 	/*if (m_movement.y > m_maxFallSpeed)
@@ -268,7 +294,11 @@ void Player::movementHandling(sf::Time dt)
 		m_animSprite.move(m_movement.x * dt.asMilliseconds(), 0.0f);
 }
 
-void Player::collisionHandling(sf::Time dt)
+/// <summary>
+/// Check collisions against platforms
+/// </summary>
+/// <param name="dt">delta time</param>
+void Player::collisionHandling(sf::Time& dt)
 {
 	if (!m_jumping)
 	{	// we will need to check to see if the player isn't currently jumping
@@ -307,8 +337,21 @@ void Player::collisionHandling(sf::Time dt)
 	}
 }
 
+void Player::fallHandling()
+{
+	if (m_animSprite.getPosition().y > m_lowestPos)
+	{
+		m_jumping = true;
+		m_fell = true;
+		m_movement.y = 0.1f;
+		m_animSprite.setPosition(400.0f, 50.0f);
+	}
+}
+
+
 void Player::update(sf::Time dt)
 {
+	m_fell = false;
 	m_animSprite.setScale(m_scale, m_scale);
 
 	walkHandling(dt);
@@ -316,13 +359,7 @@ void Player::update(sf::Time dt)
 	dashHandling(dt);
 	stompHandling(dt);
 	idleHandling(dt);
-	
-	if (m_animSprite.getPosition().y > m_lowestPos)
-	{
-		m_jumping = true;
-		m_movement.y = 0.1f;
-		m_animSprite.setPosition(400.0f, 50.0f);
-	}
+	fallHandling();
 
 	m_animSprite.play(*m_currentAnimation);
 

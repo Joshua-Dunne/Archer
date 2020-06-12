@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Background.h"
 #include "Platform.h"
+#include "Bow.h"
 
 class Game
 {
@@ -17,8 +18,13 @@ private:
 	sf::Clock m_updateClock;
 
 	Player* m_player;
+	Bow* m_bow;
+	
 
-	std::vector<Background*> m_layers;
+	std::vector<Background*> m_topLayers;
+	std::vector<Background*> m_middleLayers;
+	std::vector<Background*> m_backLayers;
+
 	std::vector<Platform*> m_platforms;
 
 	sf::Texture m_bgOne;

@@ -112,15 +112,13 @@ void Player::dashHandling(sf::Time dt)
 	{
 		if (m_walkedLeft) // dash in the direction the player was moving
 		{
-			if (m_animSprite.getPosition().x > m_animSprite.getGlobalBounds().width / 2.0f)
-				m_movement.x = -m_speed * 1.5f;
+			m_movement.x = -m_speed * 1.5f;
 
 			m_animSprite.setScale(-m_scale, m_scale);
 		}
 		else
 		{
-			if (m_animSprite.getPosition().x < 800.0f - m_animSprite.getGlobalBounds().width / 2.0f)
-				m_movement.x = m_speed * 1.5f;
+			m_movement.x = m_speed * 1.5f;
 
 			m_animSprite.setScale(m_scale, m_scale);
 		}
@@ -201,31 +199,25 @@ void Player::walkHandling(sf::Time dt)
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !m_stomping && !m_dashing)
 	{
-		if (m_animSprite.getPosition().x > + m_animSprite.getGlobalBounds().width / 2.0f)
+		if (!m_jumping)
 		{
-			if (!m_jumping)
-			{
-				m_currentAnimation = &m_walkLeft;
-			}
-
-			m_movement.x = -m_speed;
-			m_noKeyPressed = false;
-			m_walkedLeft = true;
+			m_currentAnimation = &m_walkLeft;
 		}
+
+		m_movement.x = -m_speed;
+		m_noKeyPressed = false;
+		m_walkedLeft = true;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && !m_stomping && !m_dashing)
 	{
-		if (m_animSprite.getPosition().x < 800.0f - m_animSprite.getGlobalBounds().width / 2.0f)
+		if (!m_jumping)
 		{
-			if (!m_jumping)
-			{
-				m_currentAnimation = &m_walkRight;
-			}
-
-			m_movement.x = m_speed;
-			m_noKeyPressed = false;
-			m_walkedLeft = false;
+			m_currentAnimation = &m_walkRight;
 		}
+
+		m_movement.x = m_speed;
+		m_noKeyPressed = false;
+		m_walkedLeft = false;
 	}
 }
 

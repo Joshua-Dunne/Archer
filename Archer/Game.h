@@ -29,6 +29,8 @@ private:
 	sf::Font m_font;
 	sf::Text m_instructions;
 
+	sf::RectangleShape m_instructBg;
+
 public:
 	void run();
 	void processInput();

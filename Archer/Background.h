@@ -15,7 +15,7 @@ private:
 public:
 	inline void setPosition(const sf::Vector2f& t_pos) { m_background.setPosition(t_pos); };
 	inline void move(const sf::Vector2f& t_dir) { m_background.move(t_dir); };
-	inline void render(sf::RenderWindow& t_window) const { t_window.draw(m_background); };
+	void render(sf::RenderWindow& t_window) const;
 };
 
 #endif

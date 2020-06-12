@@ -72,6 +72,7 @@ public:
 
 	inline bool isMoving() const { if (m_movement.x != 0.0f) { return true; } return false; };
 	inline float movingDir() const { return m_movement.x; };
+	inline sf::Vector2f getPosition() const { return m_animSprite.getPosition(); };
 };
 
 #endif

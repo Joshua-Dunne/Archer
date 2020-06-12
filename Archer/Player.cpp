@@ -1,18 +1,28 @@
 #include "Player.h"
 
-Player::Player() : m_animSprite(sf::seconds(0.1f), false, true), m_currentAnimation{nullptr}
+Player::Player(std::vector<Platform*>& t_platforms) : 
+	m_animSprite(sf::seconds(0.1f), false, true), 
+	m_currentAnimation{ nullptr },
+	m_platforms(t_platforms)
 {
-	// Load textures and set up animations for later use
 	setupAnimations();
 
 	m_currentAnimation = &m_idle;
 
 	m_animSprite.setOrigin(8.0f, 8.0f); // all sprites are 16x16
-	m_animSprite.setPosition(sf::Vector2f{ 400.0f, 300.0f });
+	m_animSprite.setPosition(sf::Vector2f{ 200.0f, 50.0f });
 	m_animSprite.setScale(m_scale, m_scale);
 
+	m_hitbox.setSize(sf::Vector2f{ 16.0f, 16.0f });
+	m_hitbox.setOrigin(sf::Vector2f{ 8.0f, 8.0f });
+	m_hitbox.setPosition(m_animSprite.getPosition());
+
 	m_dashCounter += sf::seconds(m_dashCooldown); // make it so the player can dash initially without having to wait
+	m_jumping = true;
+	m_stomping = false;
+	m_movement.y = 0.1f;
 }
+
 
 void Player::setupAnimations()
 {
@@ -90,6 +100,11 @@ void Player::dashHandling(sf::Time dt)
 			{
 				m_animSprite.setScale(-m_scale, m_scale);
 			}
+
+			if (m_movement.y > 0.1f)
+			{
+				m_movement.y = 0.1f;
+			}
 		}
 	}
 
@@ -97,12 +112,16 @@ void Player::dashHandling(sf::Time dt)
 	{
 		if (m_walkedLeft) // dash in the direction the player was moving
 		{
-			m_movement.x = -m_speed * 1.5f;
+			if (m_animSprite.getPosition().x > m_animSprite.getGlobalBounds().width / 2.0f)
+				m_movement.x = -m_speed * 1.5f;
+
 			m_animSprite.setScale(-m_scale, m_scale);
 		}
 		else
 		{
-			m_movement.x = m_speed * 1.5f;
+			if (m_animSprite.getPosition().x < 800.0f - m_animSprite.getGlobalBounds().width / 2.0f)
+				m_movement.x = m_speed * 1.5f;
+
 			m_animSprite.setScale(m_scale, m_scale);
 		}
 	}
@@ -182,26 +201,31 @@ void Player::walkHandling(sf::Time dt)
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !m_stomping && !m_dashing)
 	{
-		if (!m_jumping)
+		if (m_animSprite.getPosition().x > + m_animSprite.getGlobalBounds().width / 2.0f)
 		{
-			m_currentAnimation = &m_walkLeft;
-		}
+			if (!m_jumping)
+			{
+				m_currentAnimation = &m_walkLeft;
+			}
 
-		m_movement.x = -m_speed;
-		m_noKeyPressed = false;
-		m_walkedLeft = true;
+			m_movement.x = -m_speed;
+			m_noKeyPressed = false;
+			m_walkedLeft = true;
+		}
 	}
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && !m_stomping && !m_dashing)
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && !m_stomping && !m_dashing)
 	{
-		if (!m_jumping)
+		if (m_animSprite.getPosition().x < 800.0f - m_animSprite.getGlobalBounds().width / 2.0f)
 		{
-			m_currentAnimation = &m_walkRight;
-		}
+			if (!m_jumping)
+			{
+				m_currentAnimation = &m_walkRight;
+			}
 
-		m_movement.x = m_speed;
-		m_noKeyPressed = false;
-		m_walkedLeft = false;
+			m_movement.x = m_speed;
+			m_noKeyPressed = false;
+			m_walkedLeft = false;
+		}
 	}
 }
 
@@ -243,6 +267,53 @@ void Player::movementHandling(sf::Time dt)
 		m_animSprite.move(m_movement.x * dt.asMilliseconds(), 0.0f);
 }
 
+void Player::collisionHandling(sf::Time dt)
+{
+	if (m_jumping)
+	{
+		m_lastPlatformCollision = 0; // start back at 0 for the last platform checked for collision
+
+		for (auto platform : m_platforms)
+		{
+			if (platform->checkCollision(m_hitbox))
+			{
+				if (m_animSprite.getPosition().y < platform->getHitbox().getPosition().y)
+				{ // if the player was above the hitbox
+					// set player to the platform's y position (since x doesn't need to change)
+					m_animSprite.setPosition(
+						m_animSprite.getPosition().x,
+						platform->getHitbox().getPosition().y - m_animSprite.getGlobalBounds().width / 2.0f);
+
+					m_jumping = false;
+					m_stomping = false;
+					m_movement.y = 0;
+					break;
+				}
+			}
+
+			m_lastPlatformCollision++; // increase the number of platforms checked
+		}
+	}
+
+	
+
+	if (!m_jumping && !m_dashing)
+	{	// we will need to check to see if the player isn't currently jumping
+		// or currently dashing to see if the player can fall once more
+		bool notAbovePlatform{ false };
+
+		if (m_platforms[m_lastPlatformCollision]->fallenOff(m_hitbox))
+			notAbovePlatform = true;
+		
+
+		if (notAbovePlatform)
+		{
+			m_jumping = true;
+			m_movement.y = 0.1f;
+		}
+	}
+}
+
 void Player::update(sf::Time dt)
 {
 	m_animSprite.setScale(m_scale, m_scale);
@@ -253,17 +324,21 @@ void Player::update(sf::Time dt)
 	stompHandling(dt);
 	idleHandling(dt);
 	
-	if (m_animSprite.getPosition().y > 300.0f)
+	if (m_animSprite.getPosition().y > m_lowestPos)
 	{
-		m_jumping = false;
+		m_jumping = true;
 		m_stomping = false;
-		m_movement.y = 0;
-		m_animSprite.setPosition(m_animSprite.getPosition().x, 300.0f);
+		m_movement.y = 0.1f;
+		m_animSprite.setPosition(200.0f, 50.0f);
 	}
+
+	collisionHandling(dt);
 
 	m_animSprite.play(*m_currentAnimation);
 
 	movementHandling(dt);
+
+	m_hitbox.setPosition(m_animSprite.getPosition()); // move the hitbox with the player sprite
 
 	m_noKeyPressed = true;
 

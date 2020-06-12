@@ -4,6 +4,8 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "Player.h"
+#include "Background.h"
+#include "Platform.h"
 
 class Game
 {
@@ -14,7 +16,18 @@ private:
 	sf::RenderWindow m_window;
 	sf::Clock m_updateClock;
 
-	Player m_player;
+	Player* m_player;
+
+	std::vector<Background*> m_layers;
+	std::vector<Platform*> m_platforms;
+
+	sf::Texture m_bgOne;
+	sf::Texture m_bgTwo;
+	sf::Texture m_bgThree;
+	sf::Texture m_bgFour;
+
+	sf::Font m_font;
+	sf::Text m_instructions;
 
 public:
 	void run();

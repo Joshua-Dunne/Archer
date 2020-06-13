@@ -4,7 +4,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "Player.h"
-#include "Background.h"
+#include "LayerManager.h"
 #include "Platform.h"
 #include "Bow.h"
 
@@ -20,17 +20,10 @@ private:
 	Player* m_player;
 	Bow* m_bow;
 	
-
-	std::vector<Background*> m_topLayers;
-	std::vector<Background*> m_middleLayers;
-	std::vector<Background*> m_backLayers;
+	std::vector<LayerManager> m_managers;
+	LayerManager* m_layerManager;
 
 	std::vector<Platform*> m_platforms;
-
-	sf::Texture m_bgOne;
-	sf::Texture m_bgTwo;
-	sf::Texture m_bgThree;
-	sf::Texture m_bgFour;
 
 	sf::Font m_font;
 	sf::Text m_instructions;

@@ -1,13 +1,19 @@
 #include "Background.h"
 
+Background::Background()
+{
+}
+
 Background::Background(sf::Texture& m_tex) : m_bgTex(m_tex)
 {
 	m_background.setTexture(m_bgTex);
+	m_background.setOrigin(m_background.getGlobalBounds().width / 2.0f, m_background.getOrigin().y);
 }
 
 Background::Background(sf::Texture& m_tex, sf::Vector2f t_initPos) : m_bgTex(m_tex), m_initialPos(t_initPos)
 {
 	m_background.setTexture(m_bgTex);
+	m_background.setOrigin(m_background.getGlobalBounds().width / 2.0f, m_background.getOrigin().y);
 	m_background.setPosition(t_initPos);
 }
 

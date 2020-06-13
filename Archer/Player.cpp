@@ -10,7 +10,6 @@ Player::Player(std::vector<Platform*>& t_platforms) :
 	m_currentAnimation = &m_idle;
 
 	m_animSprite.setOrigin(8.0f, 8.0f); // all sprites are 16x16
-	m_animSprite.setPosition(sf::Vector2f{ 400.0f, 50.0f });
 	m_animSprite.setScale(m_scale, m_scale);
 
 	m_hitbox.setSize(sf::Vector2f{ 16.0f, 16.0f });
@@ -18,9 +17,11 @@ Player::Player(std::vector<Platform*>& t_platforms) :
 	m_hitbox.setPosition(m_animSprite.getPosition());
 
 	m_dashCounter += sf::seconds(m_dashCooldown); // make it so the player can dash initially without having to wait
-	m_jumping = true;
 	m_stomping = false;
+	m_jumping = true;
+	m_fell = true;
 	m_movement.y = 0.1f;
+	m_animSprite.setPosition(400.0f, 50.0f);
 }
 
 /// <summary>

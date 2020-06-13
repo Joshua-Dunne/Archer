@@ -24,6 +24,7 @@
     <ClCompile Include="Background.cpp" />
     <ClCompile Include="Bow.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="LayerManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -34,6 +35,7 @@
     <ClInclude Include="Background.h" />
     <ClInclude Include="Bow.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="LayerManager.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Player.h" />
   </ItemGroup>

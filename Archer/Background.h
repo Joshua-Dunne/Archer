@@ -8,6 +8,7 @@
 class Background
 {
 public:
+	Background();
 	Background(sf::Texture& m_tex);
 	Background(sf::Texture& m_tex, sf::Vector2f t_initPos);
 private:
@@ -22,6 +23,8 @@ public:
 	float getDistanceToPlayer(sf::Vector2f t_playerPos);
 	inline sf::Vector2f getPosition() { return m_background.getPosition(); };
 	inline void resetPos() { m_background.setPosition(m_initialPos); };
+	inline sf::FloatRect getGlobalBounds() { return m_background.getGlobalBounds(); };
+	void setTexture(sf::Texture& m_tex) { m_background.setTexture(m_tex); };
 };
 
 #endif

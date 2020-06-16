@@ -20,7 +20,7 @@ Player::Player(std::vector<Platform*>& t_platforms) :
 	m_stomping = false;
 	m_jumping = true;
 	m_fell = true;
-	m_movement.y = 0.1f;
+	m_movement.y = 0.0f;
 	m_animSprite.setPosition(400.0f, 50.0f);
 }
 
@@ -108,9 +108,9 @@ void Player::dashHandling(sf::Time& dt)
 				m_animSprite.setScale(-m_scale, m_scale);
 			}
 
-			if (m_movement.y > 0.1f)
+			if (m_movement.y > 0.0f)
 			{
-				m_movement.y = 0.1f;
+				m_movement.y = 0.0f;
 			}
 		}
 	}
@@ -244,7 +244,7 @@ void Player::stompHandling(sf::Time& dt)
 {
 	if (!m_stomping)
 	{
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && (m_jumping && m_movement.y > 0.1f && !m_dashing))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && (m_jumping && m_movement.y > 0.0f && !m_dashing))
 		{
 			m_movement.y = m_jumpSpeed / 2.0f;
 			m_movement.x = 0.0f;
@@ -307,7 +307,7 @@ void Player::collisionHandling(sf::Time& dt)
 		if (m_platforms[m_lastPlatformCollision]->fallenOff(m_hitbox))
 		{ // if the player fell off, show it
 			m_jumping = true;
-			m_movement.y = 0.1f;
+			m_movement.y = 0.0f;
 		}
 	}
 
@@ -344,11 +344,10 @@ void Player::fallHandling()
 	{
 		m_jumping = true;
 		m_fell = true;
-		m_movement.y = 0.1f;
+		m_movement.y = 0.0f;
 		m_animSprite.setPosition(400.0f, 50.0f);
 	}
 }
-
 
 void Player::update(sf::Time dt)
 {

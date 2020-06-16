@@ -24,28 +24,22 @@ LayerManager::LayerManager(sf::Vector2f t_pos, Player* t_player) : m_playerRef(t
 
 void LayerManager::topLayerHandling()
 {
-	// if the player moves, move this layer by their move speed
-	if (m_playerRef->isMoving())
-	{
-		m_topLayer->move(sf::Vector2f{ m_playerRef->movingDir() * 2.0f, 0.0f });
-	}
-
-
 	if (m_topNearPlayer)
-		// only check if the player has walked away, if the player is within the range of the background being displayed
+		// only check if the player has walked away,
+		// if the player was within the range of the background being displayed
 	{
-		if (m_playerRef->getPosition().x > m_topLayer->getPosition().x + (m_topLayer->getGlobalBounds().width))
+		if (m_playerRef->getPosition().x > m_topLayer->getPosition().x + m_topLayer->getGlobalBounds().width)
 		{
 			m_topLayer->setPosition(sf::Vector2f{
-				m_playerRef->getPosition().x + m_topLayer->getGlobalBounds().width,
+				m_playerRef->getPosition().x + (m_topLayer->getGlobalBounds().width),
 				m_topLayer->getPosition().y });
 				
 			m_topNearPlayer = false;
 		}
-		else if (m_playerRef->getPosition().x < m_topLayer->getPosition().x - (m_topLayer->getGlobalBounds().width))
+		else if (m_playerRef->getPosition().x < m_topLayer->getPosition().x - m_topLayer->getGlobalBounds().width)
 		{
 			m_topLayer->setPosition(sf::Vector2f{
-				m_playerRef->getPosition().x - m_topLayer->getGlobalBounds().width,
+				m_playerRef->getPosition().x - (m_topLayer->getGlobalBounds().width),
 				m_topLayer->getPosition().y });
 
 			m_topNearPlayer = false;
@@ -67,25 +61,20 @@ void LayerManager::topLayerHandling()
 
 void LayerManager::midLayerHandling()
 {
-	if (m_playerRef->isMoving())
-	{
-		m_midLayer->move(sf::Vector2f{ m_playerRef->movingDir(), 0.0f });
-	}
-
 	if (m_midNearPlayer)
 	{
-		if (m_playerRef->getPosition().x > m_midLayer->getPosition().x + (m_midLayer->getGlobalBounds().width))
+		if (m_playerRef->getPosition().x > m_midLayer->getPosition().x + m_midLayer->getGlobalBounds().width)
 		{
 			m_midLayer->setPosition(sf::Vector2f{
-				m_playerRef->getPosition().x + m_midLayer->getGlobalBounds().width,
+				m_playerRef->getPosition().x + (m_midLayer->getGlobalBounds().width),
 				m_midLayer->getPosition().y });
 
 			m_midNearPlayer = false;
 		}
-		else if (m_playerRef->getPosition().x < m_midLayer->getPosition().x - (m_midLayer->getGlobalBounds().width))
+		else if (m_playerRef->getPosition().x < m_midLayer->getPosition().x - m_midLayer->getGlobalBounds().width)
 		{
 			m_midLayer->setPosition(sf::Vector2f{
-				m_playerRef->getPosition().x - m_midLayer->getGlobalBounds().width,
+				m_playerRef->getPosition().x - (m_midLayer->getGlobalBounds().width),
 				m_midLayer->getPosition().y });
 
 			m_midNearPlayer = false;
@@ -102,25 +91,20 @@ void LayerManager::midLayerHandling()
 
 void LayerManager::backLayerHandling()
 {
-	if (m_playerRef->isMoving())
-	{
-		m_backLayer->move(sf::Vector2f{ m_playerRef->movingDir() * 0.5f, 0.0f });
-	}
-
 	if (m_backNearPlayer)
 	{
-		if (m_playerRef->getPosition().x > m_backLayer->getPosition().x + (m_backLayer->getGlobalBounds().width))
+		if (m_playerRef->getPosition().x > m_backLayer->getPosition().x + m_backLayer->getGlobalBounds().width)
 		{
 			m_backLayer->setPosition(sf::Vector2f{
-				m_playerRef->getPosition().x + m_backLayer->getGlobalBounds().width,
+				m_playerRef->getPosition().x + (m_backLayer->getGlobalBounds().width),
 				m_backLayer->getPosition().y });
 
 			m_backNearPlayer = false;
 		}
-		else if (m_playerRef->getPosition().x < m_backLayer->getPosition().x - (m_backLayer->getGlobalBounds().width))
+		else if (m_playerRef->getPosition().x < m_backLayer->getPosition().x - m_backLayer->getGlobalBounds().width)
 		{
 			m_backLayer->setPosition(sf::Vector2f{
-				m_playerRef->getPosition().x - m_backLayer->getGlobalBounds().width,
+				m_playerRef->getPosition().x - (m_backLayer->getGlobalBounds().width),
 				m_backLayer->getPosition().y });
 
 			m_backNearPlayer = false;
@@ -133,11 +117,19 @@ void LayerManager::backLayerHandling()
 	{
 		m_backNearPlayer = true;
 	}
-	
 }
 
 void LayerManager::update(sf::Time dt)
 {
+	// if the player moves, move this layer by their move speed
+	if (m_playerRef->isMoving())
+	{
+		float xMovement = m_playerRef->movingDir();
+		m_topLayer->move(sf::Vector2f{ xMovement * 2.0f, 0.0f });
+		m_midLayer->move(sf::Vector2f{ xMovement , 0.0f });
+		m_backLayer->move(sf::Vector2f{ xMovement * 0.5f, 0.0f });
+	}
+
 	topLayerHandling();
 	midLayerHandling();
 	backLayerHandling();

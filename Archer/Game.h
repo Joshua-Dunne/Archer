@@ -21,7 +21,6 @@ private:
 	Bow* m_bow;
 	
 	std::vector<LayerManager> m_managers;
-	LayerManager* m_layerManager;
 
 	std::vector<Platform*> m_platforms;
 
@@ -33,7 +32,8 @@ private:
 public:
 	void run();
 	void processInput();
-	void update(sf::Time dt);
+	void update(sf::Time& dt);
+	void moveView(sf::Time& dt);
 	void render();
 };
 

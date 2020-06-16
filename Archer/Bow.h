@@ -22,6 +22,8 @@ public:
 	void render() const;
 	void update(sf::Time dt);
 	void lookAtMouse();
+	inline float getRotation() { return m_body.getRotation(); };
+	inline sf::Vector2f getPosition() { return m_body.getPosition(); };
 };
 
 #endif

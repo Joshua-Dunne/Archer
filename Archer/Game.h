@@ -7,6 +7,7 @@
 #include "LayerManager.h"
 #include "Platform.h"
 #include "Bow.h"
+#include "Arrow.h"
 
 class Game
 {
@@ -19,15 +20,23 @@ private:
 
 	Player* m_player;
 	Bow* m_bow;
+
+	float m_gravity{ 0.035f };
 	
 	std::vector<LayerManager> m_managers;
 
 	std::vector<Platform*> m_platforms;
 
+	std::vector<Arrow*> m_arrows;
+
 	sf::Font m_font;
 	sf::Text m_instructions;
 
 	sf::RectangleShape m_instructBg;
+
+	sf::Texture m_arrowTex;
+
+	bool m_mouseHeld{ false };
 
 public:
 	void run();

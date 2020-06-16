@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="AnimatedSprite.cpp" />
     <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="Arrow.cpp" />
     <ClCompile Include="Background.cpp" />
     <ClCompile Include="Bow.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -32,6 +33,7 @@
   <ItemGroup>
     <ClInclude Include="AnimatedSprite.hpp" />
     <ClInclude Include="Animation.hpp" />
+    <ClInclude Include="Arrow.h" />
     <ClInclude Include="Background.h" />
     <ClInclude Include="Bow.h" />
     <ClInclude Include="Game.h" />
@@ -108,12 +110,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SFML_SDK)\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Archer\include\Aurora;$(SolutionDir)Archer\include;$(SFML_SDK)\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SFML_SDK)\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Archer\lib;$(SFML_SDK)\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

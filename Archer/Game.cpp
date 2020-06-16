@@ -9,6 +9,11 @@ Game::Game() : m_window(sf::VideoMode(800, 600), "Archer")
 		std::cout << "error loading TurlyHorrible font" << std::endl;
 	}
 
+	if (!m_arrowTex.loadFromFile("./resources/sprites/arrows/arrow1.png"))
+	{
+		std::cout << "error loading arrow 1 png" << std::endl;
+	}
+
 	m_instructions.setFont(m_font);
 	m_instructions.setCharacterSize(16u);
 	m_instructions.setString("A/D Key: Move Left/Right\nSpace/W Key: Jump\nShift: Dash\nS Key (while mid-air): Stomp");
@@ -29,6 +34,8 @@ Game::Game() : m_window(sf::VideoMode(800, 600), "Archer")
 	m_instructBg.setPosition(m_instructions.getPosition() - sf::Vector2f{ 10.0f, 10.0f });
 	m_instructBg.setSize(sf::Vector2f{ m_instructions.getGlobalBounds().width + 20.0f, m_instructions.getGlobalBounds().height + 20.0f });
 	m_instructBg.setFillColor(sf::Color::Black);
+
+	m_arrows.push_back(new Arrow(m_bow, m_gravity, m_arrowTex));
 }
 
 Game::~Game()
@@ -38,6 +45,7 @@ Game::~Game()
 
 	m_platforms.clear();
 	m_managers.clear();
+	m_arrows.clear();
 }
 
 /// <summary>
@@ -72,6 +80,30 @@ void Game::processInput()
 		{
 			m_window.close();
 		}
+
+		if (event.type == sf::Event::MouseButtonPressed && !m_mouseHeld)
+		{
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			{
+				for (auto& arrow : m_arrows)
+				{
+					if (!arrow->isShot())
+					{
+						arrow->shoot(); // find the next available arrow and shoot it
+						std::cout << "arrow shot" << std::endl;
+						break;
+					}
+				}
+			}
+
+			m_mouseHeld = true;
+		}
+
+		if (event.type == sf::Event::MouseButtonReleased && m_mouseHeld)
+		{
+			if (event.type == sf::Event::MouseLeft) // if it was the left mouse
+				m_mouseHeld = false;
+		}
 	}
 }
 
@@ -87,6 +119,13 @@ void Game::update(sf::Time& dt)
 	moveView(dt);
 
 	m_bow->update(dt);
+
+	bool nullFound{ false };
+
+	for (auto& arrow : m_arrows)
+	{
+		arrow->update(dt);
+	}
 }
 
 void Game::moveView(sf::Time& dt)
@@ -131,6 +170,11 @@ void Game::render()
 	}
 
 	m_bow->render();
+
+	for (auto& arrow : m_arrows)
+	{
+		arrow->render(m_window);
+	}
 
 	m_window.display();
 }

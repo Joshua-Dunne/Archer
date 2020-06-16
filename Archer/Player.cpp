@@ -319,7 +319,7 @@ void Player::collisionHandling(sf::Time& dt)
 		{
 			if (platform->checkCollision(m_hitbox))
 			{
-				if (m_animSprite.getPosition().y < platform->getHitbox().getPosition().y)
+				if (m_hitbox.getPosition().y < platform->getHitbox().getPosition().y)
 				{ // if the player was above the hitbox
 					// set player to the platform's y position (since x doesn't need to change)
 					m_animSprite.setPosition(
@@ -367,11 +367,11 @@ void Player::update(sf::Time dt)
 
 	movementHandling(dt);
 
-	m_hitbox.setPosition(m_animSprite.getPosition()); // move the hitbox with the player sprite
-
 	m_noKeyPressed = true;
 
 	m_animSprite.update(dt);
+
+	m_hitbox.setPosition(m_animSprite.getPosition()); // move the hitbox with the player sprite
 }
 
 void Player::render(sf::RenderWindow& t_window)

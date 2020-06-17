@@ -1,9 +1,10 @@
 #include "Arrow.h"
 
-Arrow::Arrow(Bow* t_bow, float& t_gravity, sf::Texture& t_tex) : m_bowRef(t_bow), m_gravity(t_gravity), m_arrowTex(t_tex)
+Arrow::Arrow(Bow* t_bow, sf::Texture& t_tex) : m_bowRef(t_bow), m_arrowTex(t_tex)
 {
 	m_body.setTexture(m_arrowTex);
 	m_body.setOrigin(m_body.getGlobalBounds().width / 2.0f, m_body.getGlobalBounds().height / 2.0f);
+	m_body.setScale(0.25f, 0.25f);
 }
 
 Arrow::~Arrow()
@@ -17,17 +18,19 @@ void Arrow::shoot()
 	{
 		m_body.setPosition(m_bowRef->getPosition());
 
-		// get the direction the vector will face based on the rotation of the bow
-		sf::Vector2f rotationVector = thor::rotatedVector(m_moveDir, m_body.getRotation());
+		float rot = m_bowRef->getRotation();
 
-		// get a smaller fraction of that direction vector
-		if(m_moveDir.x != 0 || m_moveDir.y != 0)
-			m_moveDir = m_moveDir / thor::length(m_moveDir);
+		// calcuate direction based on rotation
+		m_moveDir.x = cos(rot * (3.14159f / 180.0f));
+		m_moveDir.y = sin(rot * (3.14159f / 180.0f));
+
+		m_body.setRotation(atan2(m_moveDir.y, m_moveDir.x) * 3.14159f / 180.0f);
 
 		// multiply unit vector by shot speed, so it will move faster in the chosen direction
-		m_moveDir *= m_shotSpeed; 
+		m_moveDir *= m_shotSpeed;
 
-		m_body.setRotation(atan2(m_moveDir.y, m_moveDir.x) * 180.0f / 3.14159f);
+		m_moveDir.x += m_bowRef->getMovement(); 
+		// add to x movement any movement the bow is also feeling at the moment an arrow is shot
 
 		m_shot = true;
 	}
@@ -40,11 +43,9 @@ void Arrow::update(sf::Time& dt)
 	{
 		collisionHandling(dt);
 
-		m_moveDir.y += m_gravity;
+		m_moveDir.y += m_gravity * m_weight;
 
 		collisionHandling(dt);
-
-		std::cout << m_moveDir.y << std::endl;
 
 		m_body.move(m_moveDir);
 		m_body.setRotation(atan2(m_moveDir.y, m_moveDir.x) * 180.0f / 3.14159f);

@@ -16,8 +16,8 @@ Game::Game() : m_window(sf::VideoMode(800, 600), "Archer")
 
 	m_instructions.setFont(m_font);
 	m_instructions.setCharacterSize(16u);
-	m_instructions.setString("A/D Key: Move Left/Right\nSpace/W Key: Jump\nShift: Dash\nS Key (while mid-air): Stomp");
-	m_instructions.setPosition(sf::Vector2f{ 250.0f, 525.0f });
+	m_instructions.setString("A/D Key: Move Left/Right\nSpace/W Key: Jump\nShift: Dash\nS Key (while mid-air): Stomp\nLeft Click: Shoot Arrow");
+	m_instructions.setPosition(sf::Vector2f{ 295.0f, 512.5f });
 
 	m_platforms.push_back(new Platform(sf::Vector2f{ 150.0f, 250.0f }, 1.0f));
 	m_platforms.push_back(new Platform(sf::Vector2f{ 650.0f, 250.0f }, 1.0f));
@@ -35,7 +35,11 @@ Game::Game() : m_window(sf::VideoMode(800, 600), "Archer")
 	m_instructBg.setSize(sf::Vector2f{ m_instructions.getGlobalBounds().width + 20.0f, m_instructions.getGlobalBounds().height + 20.0f });
 	m_instructBg.setFillColor(sf::Color::Black);
 
-	m_arrows.push_back(new Arrow(m_bow, m_gravity, m_arrowTex));
+	m_arrows.push_back(new Arrow(m_bow, m_arrowTex));
+	m_arrows.push_back(new Arrow(m_bow, m_arrowTex));
+	m_arrows.push_back(new Arrow(m_bow, m_arrowTex));
+	m_arrows.push_back(new Arrow(m_bow, m_arrowTex));
+	m_arrows.push_back(new Arrow(m_bow, m_arrowTex));
 }
 
 Game::~Game()
@@ -81,28 +85,32 @@ void Game::processInput()
 			m_window.close();
 		}
 
-		if (event.type == sf::Event::MouseButtonPressed && !m_mouseHeld)
+		if (event.type == sf::Event::MouseButtonPressed)
 		{
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !m_player->isDashing())
 			{
-				for (auto& arrow : m_arrows)
+				if (!m_mouseHeld)
 				{
-					if (!arrow->isShot())
+					for (auto& arrow : m_arrows)
 					{
-						arrow->shoot(); // find the next available arrow and shoot it
-						std::cout << "arrow shot" << std::endl;
-						break;
+						if (!arrow->isShot())
+						{
+							arrow->shoot(); // find the next available arrow and shoot it
+							std::cout << "arrow shot" << std::endl;
+							m_mouseHeld = true;
+							break;
+						}
 					}
 				}
+				
 			}
 
-			m_mouseHeld = true;
+			
 		}
 
-		if (event.type == sf::Event::MouseButtonReleased && m_mouseHeld)
+		if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
-			if (event.type == sf::Event::MouseLeft) // if it was the left mouse
-				m_mouseHeld = false;
+			m_mouseHeld = false;
 		}
 	}
 }

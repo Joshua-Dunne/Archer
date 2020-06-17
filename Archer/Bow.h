@@ -24,6 +24,7 @@ public:
 	void lookAtMouse();
 	inline float getRotation() { return m_body.getRotation(); };
 	inline sf::Vector2f getPosition() { return m_body.getPosition(); };
+	inline float getMovement() { return m_playerRef->movingDir(); };
 };
 
 #endif

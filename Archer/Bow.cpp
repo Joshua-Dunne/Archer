@@ -44,5 +44,8 @@ void Bow::lookAtMouse()
 
     float rotation = (atan2(dy, dx)) * 180 / PI;
 
+   /* if(static_cast<int>(rotation) != static_cast<int>(m_body.getRotation() - 180.0f))
+        std::cout << "bow rot: " << rotation + 180.0f << std::endl;*/
+
     m_body.setRotation(rotation + 180.0f);
 }

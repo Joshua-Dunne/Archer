@@ -6,6 +6,7 @@
 #include <vector>
 #include "AnimatedSprite.hpp"
 #include "Platform.h"
+#include "globals.h"
 
 class Player
 {
@@ -37,7 +38,6 @@ private:
 
 	const float m_lowestPos{ 600.0f };
 	const float m_scale{ 2.0f };
-	const float m_gravity{ 0.035f };
 	const float m_dashSpeed{ 1.0f };
 	const float m_speed{ 0.25f };
 	const float m_jumpSpeed{ 1.0f };

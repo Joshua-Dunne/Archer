@@ -5,12 +5,13 @@
 #include <SFML/Graphics.hpp>
 #include <Thor/Vectors.hpp>
 #include "Bow.h"
+#include "globals.h"
 
 class Arrow
 {
 public:
 	Arrow() = delete;
-	Arrow(Bow* t_bow, float& t_gravity, sf::Texture& t_tex);
+	Arrow(Bow* t_bow, sf::Texture& t_tex);
 	~Arrow();
 
 private:
@@ -18,9 +19,9 @@ private:
 
 	sf::Vector2f m_moveDir{ 0.0f, 0.0f };
 	float m_rotation{ 0.0f };
-	float m_gravity;
 
-	const float m_shotSpeed{ 1.0f };
+	const float m_shotSpeed{ 5.0f };
+	float m_weight{ 2.0f};
 
 	sf::Texture m_arrowTex;
 	sf::Sprite m_body;

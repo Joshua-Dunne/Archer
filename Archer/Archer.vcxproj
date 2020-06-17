@@ -37,6 +37,7 @@
     <ClInclude Include="Background.h" />
     <ClInclude Include="Bow.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="globals.h" />
     <ClInclude Include="LayerManager.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Player.h" />

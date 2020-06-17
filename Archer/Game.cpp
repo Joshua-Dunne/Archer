@@ -96,7 +96,6 @@ void Game::processInput()
 						if (!arrow->isShot())
 						{
 							arrow->shoot(); // find the next available arrow and shoot it
-							std::cout << "arrow shot" << std::endl;
 							m_mouseHeld = true;
 							break;
 						}

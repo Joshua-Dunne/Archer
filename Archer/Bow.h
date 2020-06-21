@@ -29,7 +29,8 @@ public:
 	inline sf::Vector2f getPosition() { return m_body.getPosition(); };
 	inline float getMovement() { return m_playerRef->movingDir(); };
 	void increaseMultiplier(sf::Time& dt);
-	inline float getMultiplier() { float mult = m_speedMultiplier; m_speedMultiplier = 1.0f; return mult; };
+	inline void resetMultiplier() { m_speedMultiplier = 1.0f; };
+	inline float getMultiplier() { return m_speedMultiplier; };
 };
 
 #endif

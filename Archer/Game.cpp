@@ -40,6 +40,11 @@ Game::Game() : m_window(sf::VideoMode(800, 600), "Archer")
 	m_arrows.push_back(new Arrow(m_bow, m_arrowTex));
 	m_arrows.push_back(new Arrow(m_bow, m_arrowTex));
 	m_arrows.push_back(new Arrow(m_bow, m_arrowTex));
+
+	m_chargeBar.setSize(sf::Vector2f{10.0f, 100.0f});
+	m_chargeBar.setOrigin(sf::Vector2f{ 5.0f, m_chargeBar.getOrigin().y});
+	m_chargeBar.setFillColor(sf::Color::Red);
+	m_chargeBar.setSize(sf::Vector2f{ 10.0f, 0.0f });
 }
 
 Game::~Game()
@@ -93,10 +98,7 @@ void Game::processInput()
 				{
 					m_mouseHeld = true;
 				}
-				
 			}
-
-			
 		}
 
 		if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
@@ -108,7 +110,9 @@ void Game::processInput()
 					if (!arrow->isShot())
 					{
 						arrow->shoot(m_bow->getMultiplier()); // find the next available arrow and shoot it
+						m_bow->resetMultiplier();
 						m_mouseHeld = false;
+						m_chargeBar.setSize(sf::Vector2f{ 10.0f, 0.0f }); //reset charge bar
 						break;
 					}
 				}
@@ -130,8 +134,6 @@ void Game::update(sf::Time& dt)
 
 	m_bow->update(dt);
 
-	bool nullFound{ false };
-
 	for (auto& arrow : m_arrows)
 	{
 		arrow->update(dt);
@@ -146,6 +148,7 @@ void Game::update(sf::Time& dt)
 			{	// before letting the player charge another shot
 				// if one arrow is available, increase the multiplier for arrow speed
 				m_bow->increaseMultiplier(dt);
+				m_chargeBar.setSize(sf::Vector2f{ 10.0f, -1 * (((m_bow->getMultiplier() - 1.0f) * (10.0f))) });
 				break;
 			}
 		}
@@ -162,6 +165,10 @@ void Game::moveView(sf::Time& dt)
 		view.move(sf::Vector2f{ m_player->getPosition().x - view.getCenter().x, 0.0f });
 
 	m_window.setView(view);
+
+	m_chargeBar.setPosition(m_player->getPosition().x - 12.5f, m_player->getPosition().y);
+
+	
 }
 
 void Game::render()
@@ -199,6 +206,8 @@ void Game::render()
 	{
 		arrow->render(m_window);
 	}
+
+	m_window.draw(m_chargeBar);
 
 	m_window.display();
 }

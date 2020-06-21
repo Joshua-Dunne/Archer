@@ -33,6 +33,7 @@ private:
 	sf::Text m_instructions;
 
 	sf::RectangleShape m_instructBg;
+	sf::RectangleShape m_chargeBar;
 
 	sf::Texture m_arrowTex;
 

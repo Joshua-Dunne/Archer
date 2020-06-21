@@ -17,6 +17,9 @@ private:
 	sf::RenderWindow* m_windowRef;
 	Player* m_playerRef;
 
+	float m_speedMultiplier{ 1.0f };
+	const float m_maxMultiplier{ 3.0f };
+
 public:
 	inline void setPosition(const sf::Vector2f& t_pos) { m_body.setPosition(t_pos); };
 	void render() const;
@@ -25,6 +28,8 @@ public:
 	inline float getRotation() { return m_body.getRotation(); };
 	inline sf::Vector2f getPosition() { return m_body.getPosition(); };
 	inline float getMovement() { return m_playerRef->movingDir(); };
+	void increaseMultiplier(sf::Time& dt);
+	inline float getMultiplier() { float mult = m_speedMultiplier; m_speedMultiplier = 1.0f; return mult; };
 };
 
 #endif

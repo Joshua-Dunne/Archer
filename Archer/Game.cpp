@@ -91,15 +91,7 @@ void Game::processInput()
 			{
 				if (!m_mouseHeld)
 				{
-					for (auto& arrow : m_arrows)
-					{
-						if (!arrow->isShot())
-						{
-							arrow->shoot(); // find the next available arrow and shoot it
-							m_mouseHeld = true;
-							break;
-						}
-					}
+					m_mouseHeld = true;
 				}
 				
 			}
@@ -109,7 +101,18 @@ void Game::processInput()
 
 		if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
-			m_mouseHeld = false;
+			if (m_mouseHeld)
+			{
+				for (auto& arrow : m_arrows)
+				{
+					if (!arrow->isShot())
+					{
+						arrow->shoot(m_bow->getMultiplier()); // find the next available arrow and shoot it
+						m_mouseHeld = false;
+						break;
+					}
+				}
+			}
 		}
 	}
 }
@@ -132,6 +135,20 @@ void Game::update(sf::Time& dt)
 	for (auto& arrow : m_arrows)
 	{
 		arrow->update(dt);
+	}
+
+	if (m_mouseHeld)
+	{ // no need to go into look if the mouse isn't currently held
+		for (auto& arrow : m_arrows)
+		{
+			if (!arrow->isShot())
+				// make sure at least one arrow is available
+			{	// before letting the player charge another shot
+				// if one arrow is available, increase the multiplier for arrow speed
+				m_bow->increaseMultiplier(dt);
+				break;
+			}
+		}
 	}
 }
 

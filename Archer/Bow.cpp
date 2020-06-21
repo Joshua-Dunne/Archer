@@ -49,3 +49,13 @@ void Bow::lookAtMouse()
 
     m_body.setRotation(rotation + 180.0f);
 }
+
+void Bow::increaseMultiplier(sf::Time& dt)
+{
+    if (m_speedMultiplier < m_maxMultiplier) // increase to a max
+    {
+        m_speedMultiplier += dt.asMilliseconds() / 1000.0f;
+        std::cout << "Current Multiplier: " << m_speedMultiplier << std::endl;
+    }
+       
+}

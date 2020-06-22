@@ -44,6 +44,10 @@
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Player.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Library Include="lib\thor-d.lib" />
+    <Library Include="lib\thor.lib" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{580FBF89-876C-4621-AD61-A6EFBF4CAC81}</ProjectGuid>

@@ -30,6 +30,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Walker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimatedSprite.hpp" />
@@ -43,10 +44,7 @@
     <ClInclude Include="LayerManager.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Player.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="lib\thor-d.lib" />
-    <Library Include="lib\thor.lib" />
+    <ClInclude Include="Walker.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

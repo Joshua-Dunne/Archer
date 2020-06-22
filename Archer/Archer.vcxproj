@@ -24,6 +24,7 @@
     <ClCompile Include="Arrow.cpp" />
     <ClCompile Include="Background.cpp" />
     <ClCompile Include="Bow.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="LayerManager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -36,6 +37,7 @@
     <ClInclude Include="Arrow.h" />
     <ClInclude Include="Background.h" />
     <ClInclude Include="Bow.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="LayerManager.h" />

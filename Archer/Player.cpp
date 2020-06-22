@@ -340,7 +340,7 @@ void Player::collisionHandling(sf::Time& dt)
 
 void Player::fallHandling()
 {
-	if (m_animSprite.getPosition().y > m_lowestPos)
+	if (m_animSprite.getPosition().y > m_screenHeight)
 	{
 		m_jumping = true;
 		m_fell = true;

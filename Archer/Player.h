@@ -36,7 +36,6 @@ private:
 	int m_lastPlatformCollision{ 0 };
 	int m_currentPlatform{ 0 };
 
-	const float m_lowestPos{ 600.0f };
 	const float m_scale{ 2.0f };
 	const float m_dashSpeed{ 1.0f };
 	const float m_speed{ 0.25f };

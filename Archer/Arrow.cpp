@@ -55,7 +55,7 @@ void Arrow::update(sf::Time& dt)
 
 void Arrow::collisionHandling(sf::Time& dt)
 {
-	if (m_body.getPosition().y > 800.0f + m_body.getGlobalBounds().height / 2.0f)
+	if (m_body.getPosition().y > m_screenWidth + m_body.getGlobalBounds().height / 2.0f)
 	{ // if the arrow has gone off the bottom of the screen
 		m_shot = false;
 		m_moveDir = sf::Vector2f{ 0.0f, 0.0f };
@@ -63,7 +63,7 @@ void Arrow::collisionHandling(sf::Time& dt)
 	}
 }
 
-void Arrow::render(sf::RenderWindow& t_window)
+void Arrow::render(sf::RenderWindow& t_window) const
 {
 	if (m_shot) 
 	{ 

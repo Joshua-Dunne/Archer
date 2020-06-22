@@ -32,8 +32,9 @@ public:
 	void shoot(float t_speedMultiplier);
 	void update(sf::Time& dt);
 	void collisionHandling(sf::Time& dt);
-	void render(sf::RenderWindow& t_window);
-	bool isShot() { return m_shot; };
+	void render(sf::RenderWindow& t_window) const;
+	inline bool isShot() const { return m_shot; };
+	inline sf::FloatRect getGlobalBounds() const { return m_body.getGlobalBounds(); };
 };
 
 #endif

@@ -1,6 +1,6 @@
 #include "Game.h"
 
-Game::Game() : m_window(sf::VideoMode(800, 600), "Archer")
+Game::Game() : m_window(sf::VideoMode(m_screenWidth, m_screenHeight), "Archer")
 {
 	m_window.setFramerateLimit(60u);
 

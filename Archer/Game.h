@@ -8,6 +8,7 @@
 #include "Platform.h"
 #include "Bow.h"
 #include "Arrow.h"
+#include "globals.h"
 
 class Game
 {

@@ -9,6 +9,7 @@
 #include "Bow.h"
 #include "Arrow.h"
 #include "globals.h"
+#include "Walker.h"
 
 class Game
 {
@@ -37,6 +38,8 @@ private:
 	sf::RectangleShape m_chargeBar;
 
 	sf::Texture m_arrowTex;
+
+	Walker* m_tempWalker;
 
 	bool m_mouseHeld{ false };
 

@@ -45,12 +45,15 @@ Game::Game() : m_window(sf::VideoMode(m_screenWidth, m_screenHeight), "Archer")
 	m_chargeBar.setOrigin(sf::Vector2f{ 5.0f, m_chargeBar.getOrigin().y});
 	m_chargeBar.setFillColor(sf::Color::Red);
 	m_chargeBar.setSize(sf::Vector2f{ 10.0f, 0.0f });
+
+	m_tempWalker = new Walker(m_arrows, m_platforms, sf::Vector2f{ 700.0f, 150.0f });
 }
 
 Game::~Game()
 {
 	delete m_player;
 	delete m_bow;
+	delete m_tempWalker;
 
 	m_platforms.clear();
 	m_managers.clear();
@@ -139,6 +142,8 @@ void Game::update(sf::Time& dt)
 		arrow->update(dt);
 	}
 
+	m_tempWalker->update(dt);
+
 	if (m_mouseHeld)
 	{ // no need to go into look if the mouse isn't currently held
 		for (auto& arrow : m_arrows)
@@ -201,6 +206,8 @@ void Game::render()
 	}
 
 	m_bow->render();
+
+	m_tempWalker->render(m_window);
 
 	for (auto& arrow : m_arrows)
 	{

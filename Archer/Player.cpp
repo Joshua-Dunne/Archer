@@ -283,12 +283,6 @@ void Player::idleHandling(sf::Time& dt)
 /// <param name="dt">delta time</param>
 void Player::movementHandling(sf::Time& dt)
 {
-
-	/*if (m_movement.y > m_maxFallSpeed)
-	{
-		m_movement.y = m_maxFallSpeed;
-	}*/
-
 	if (!m_dashing || (m_dashing && m_movement.y < 0.0f))
 		m_animSprite.move(m_movement.x * dt.asMilliseconds(), m_movement.y * dt.asMilliseconds());
 	else

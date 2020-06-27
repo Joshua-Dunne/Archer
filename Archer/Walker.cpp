@@ -9,7 +9,7 @@ Walker::Walker(std::vector<Arrow*>& t_arrowRef, std::vector<Platform*>& t_platfo
 	m_hitbox.setOrigin(sf::Vector2f{ 8.0f, 8.0f });
 	m_hitbox.setFillColor(sf::Color::Red);
 	m_hitbox.setPosition(t_startingPos);
-	m_movement.x = -1.0f;
+	m_movement.x = -0.10f;
 	m_movement.y = 0.0f;
 	m_falling = true;
 	m_lastPlatformCollision = 0;
@@ -36,12 +36,12 @@ void Walker::update(sf::Time& dt)
 {
 	if (m_falling)
 	{
-		m_movement.y += m_gravity; //  * dt.asMilliseconds()
+		m_movement.y += (m_gravity * m_weight) / dt.asMilliseconds(); //  * dt.asMilliseconds()
 	}
 
 	collisionHandling(dt);
-		
-	m_hitbox.move(m_movement);
+	
+	m_hitbox.move(m_movement.x * dt.asMilliseconds(), m_movement.y * dt.asMilliseconds());
 }
 
 void Walker::render(sf::RenderWindow& t_window)
@@ -63,7 +63,7 @@ void Walker::collisionHandling(sf::Time& dt)
 
 	if (m_movement.y > 0.0f && m_falling)
 	{
-		float platColl = 0; // start back at 0 for the last platform checked for collision
+		int platColl = 0; // start back at 0 for the last platform checked for collision
 
 		for (auto platform : m_platformRefs)
 		{

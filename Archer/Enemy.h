@@ -19,7 +19,7 @@ protected:
 
 	sf::Vector2f m_movement;
 	sf::RectangleShape m_hitbox;
-	float m_lastPlatformCollision;
+	int m_lastPlatformCollision;
 	bool m_falling;
 
 public:

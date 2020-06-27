@@ -14,6 +14,9 @@ protected:
 	std::vector<Platform*>& m_platformRefs;
 	virtual void setupAnimations();
 
+private:
+	const float m_weight{ 2.5f };
+
 public:
 	virtual void update(sf::Time& dt);
 	virtual void render(sf::RenderWindow& t_window);

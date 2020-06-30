@@ -12,7 +12,7 @@ Player::Player(std::vector<Platform*>& t_platforms) :
 	m_animSprite.setOrigin(8.0f, 8.0f); // all sprites are 16x16
 	m_animSprite.setScale(m_scale, m_scale);
 
-	m_hitbox.setSize(sf::Vector2f{ 16.0f, 16.0f });
+	m_hitbox.setSize(sf::Vector2f{16.0f, 16.0f });
 	m_hitbox.setOrigin(sf::Vector2f{ 8.0f, 8.0f });
 	m_hitbox.setPosition(m_animSprite.getPosition());
 
@@ -65,7 +65,6 @@ void Player::setupAnimations()
 		m_walkLeft.addFrame(sf::IntRect(index * m_dimension, m_dimension, m_dimension, m_dimension)); // bottom row
 		m_dash.addFrame(sf::IntRect(index * m_dimension, 0, m_dimension, m_dimension));
 	}
-
 
 	m_idle.setSpriteSheet(m_idleTex);
 
@@ -319,6 +318,7 @@ void Player::collisionHandling(sf::Time& dt)
 					m_animSprite.setPosition(
 						m_animSprite.getPosition().x,
 						platform->getHitbox().getPosition().y - m_animSprite.getGlobalBounds().width / 2.0f);
+					m_hitbox.setPosition(m_animSprite.getPosition()); // move the hitbox with the player sprite
 
 					m_jumping = false;
 					m_stomping = false;
@@ -332,6 +332,9 @@ void Player::collisionHandling(sf::Time& dt)
 	}
 }
 
+/// <summary>
+/// Handle player falling off bottom of screen
+/// </summary>
 void Player::fallHandling()
 {
 	if (m_animSprite.getPosition().y > m_screenHeight)
@@ -343,7 +346,7 @@ void Player::fallHandling()
 	}
 }
 
-void Player::update(sf::Time dt)
+void Player::update(sf::Time& dt)
 {
 	m_fell = false;
 	m_animSprite.setScale(m_scale, m_scale);
@@ -357,15 +360,15 @@ void Player::update(sf::Time dt)
 
 	m_animSprite.play(*m_currentAnimation);
 
-	collisionHandling(dt);
-
 	movementHandling(dt);
+
+	m_hitbox.setPosition(m_animSprite.getPosition()); // move the hitbox with the player sprite
+
+	collisionHandling(dt);
 
 	m_noKeyPressed = true;
 
 	m_animSprite.update(dt);
-
-	m_hitbox.setPosition(m_animSprite.getPosition()); // move the hitbox with the player sprite
 }
 
 void Player::render(sf::RenderWindow& t_window)

@@ -68,7 +68,7 @@ private:
 	
 
 public:
-	void update(sf::Time dt);
+	void update(sf::Time& dt);
 	void render(sf::RenderWindow& t_window);
 
 	inline bool isMoving() const { if (m_movement.x != 0.0f) { return true; } return false; };

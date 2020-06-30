@@ -19,6 +19,9 @@ protected:
 
 	sf::Vector2f m_movement;
 	sf::RectangleShape m_hitbox;
+	sf::Texture m_spriteTexture;
+	AnimatedSprite m_animSprite;
+	Animation* m_currAnim;
 	int m_lastPlatformCollision;
 	bool m_falling;
 

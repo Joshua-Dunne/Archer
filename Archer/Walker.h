@@ -16,6 +16,10 @@ protected:
 
 private:
 	const float m_weight{ 2.5f };
+	
+	Animation m_walkAnim;
+	
+	sf::Vector2f m_startingPos;
 
 public:
 	virtual void update(sf::Time& dt);

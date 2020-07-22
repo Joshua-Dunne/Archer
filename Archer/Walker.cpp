@@ -40,14 +40,20 @@ void Walker::setupAnimations()
 {
 	if (!m_spriteTexture.loadFromFile("./resources/sprites/enemies/walker/walkerMega.png"))
 	{
-		std::cout << "Error loading run anim strip png" << std::endl;
+		std::cout << "Error loading walker mega png" << std::endl;
 	}
 
 	m_walkAnim.setSpriteSheet(m_spriteTexture);
+	m_deathAnim.setSpriteSheet(m_spriteTexture);
 
 	for (int index = 0; index < 8; ++index) // 8 sprites for walk animation
 	{
 		m_walkAnim.addFrame(sf::IntRect(index * 16, 0, 16, 16));
+	}
+
+	for (int index = 0; index < 8; ++index) // 8 sprites for walk animation
+	{
+		m_deathAnim.addFrame(sf::IntRect(index * 16, 32, 16, 16));
 	}
 
 	if (m_movement.x < 0.0f)
@@ -64,68 +70,108 @@ void Walker::setupAnimations()
 
 void Walker::update(sf::Time& dt)
 {
-	if (m_falling)
+	if (m_active)
 	{
-		m_movement.y += (m_gravity * m_weight) / dt.asMilliseconds(); //  * dt.asMilliseconds()
-	}
+		if (!m_dead)
+		{
+			if (m_falling)
+			{
+				m_movement.y += (m_gravity * m_weight) / dt.asMilliseconds(); //  * dt.asMilliseconds()
+			}
 
-	m_animSprite.play(*m_currAnim);
-	
-	m_animSprite.move(m_movement.x * dt.asMilliseconds(), m_movement.y * dt.asMilliseconds());
-	m_hitbox.setPosition(m_animSprite.getPosition());
+			m_animSprite.play(*m_currAnim);
 
-	collisionHandling(dt);
+			m_animSprite.move(m_movement.x * dt.asMilliseconds(), m_movement.y * dt.asMilliseconds());
+			m_hitbox.setPosition(m_animSprite.getPosition());
 
-	if (m_animSprite.getPosition().y > m_screenHeight)
-	{
-		m_movement.y = 0.0f;
-		m_animSprite.setPosition(m_startingPos);
-		m_hitbox.setPosition(m_animSprite.getPosition());
-	}
+			collisionHandling(dt);
 
-	m_animSprite.update(dt);
+			m_animSprite.update(dt);
+		}
+		else
+		{
+			m_animSprite.play(*m_currAnim);
+			m_animSprite.update(dt);
+
+			if (m_deathClock.getElapsedTime().asSeconds() > 2.0f)
+			{
+				m_active = false;
+				m_deathClock.restart();
+			}
+		}
+	}	
 }
 
 void Walker::render(sf::RenderWindow& t_window)
 {
-	t_window.draw(m_animSprite);
+	if (m_active)
+	{
+		t_window.draw(m_animSprite);
+	}
 }
 
 void Walker::collisionHandling(sf::Time& dt)
 {
-	if (!m_falling)
+	if (!m_dead) // if the enemy is still alive
 	{
-		if (m_platformRefs[m_lastPlatformCollision]->fallenOff(m_hitbox))
-			// make sure the enemy isn't already falling when checking
-		{ // if the enemy fell off, show it
-			m_falling = true;
-		}
-	}
-	
-
-	if (m_movement.y > 0.0f && m_falling)
-	{
-		int platColl = 0; // start back at 0 for the last platform checked for collision
-
-		for (auto platform : m_platformRefs)
+		if (!m_falling)
 		{
-			if (platform->checkCollision(m_hitbox))
-			{
-				if (m_hitbox.getPosition().y < platform->getHitbox().getPosition().y)
-				{ // check to see if enemy has touched hitbox
-					m_animSprite.setPosition(
-						m_animSprite.getPosition().x,
-						platform->getHitbox().getPosition().y - m_animSprite.getGlobalBounds().width / 2.0f);
-					m_hitbox.setPosition(m_animSprite.getPosition());
+			if (m_platformRefs[m_lastPlatformCollision]->fallenOff(m_hitbox))
+				// make sure the enemy isn't already falling when checking
+			{ // if the enemy fell off, show it
+				m_falling = true;
+			}
+		}
 
-					m_movement.y = 0; // reset y movement, so no more falling happens
-					m_falling = false; // this walker is no longer falling
-					m_lastPlatformCollision = platColl; // let the walker know what number was the last collided with
-					break;
+		for (auto arrow : m_arrowRefs)
+		{
+			if (arrow->isShot())
+			{
+				if (m_hitbox.getGlobalBounds().intersects(arrow->getGlobalBounds()))
+				{
+					// since the walker was hit, begin the death animation
+					std::cout << "Walker hit!" << std::endl;
+					arrow->hit(); // tell the arrow it hit something, so it can disable itself for use again
+					m_dead = true;
+					m_movement = sf::Vector2f{ 0.0f, 0.0f }; // stop any movement
+					m_currAnim = &m_deathAnim;
+					m_animSprite.setLooped(false);
+					m_deathClock.restart();
 				}
 			}
+		}
 
-			platColl++; // increase the number of platforms checked
+
+		if (m_movement.y > 0.0f && m_falling)
+		{
+			int platColl = 0; // start back at 0 for the last platform checked for collision
+
+			for (auto platform : m_platformRefs)
+			{
+				if (platform->checkCollision(m_hitbox))
+				{
+					if (m_hitbox.getPosition().y < platform->getHitbox().getPosition().y)
+					{ // check to see if enemy has touched hitbox
+						m_animSprite.setPosition(
+							m_animSprite.getPosition().x,
+							platform->getHitbox().getPosition().y - m_animSprite.getGlobalBounds().width / 2.0f);
+						m_hitbox.setPosition(m_animSprite.getPosition());
+
+						m_movement.y = 0; // reset y movement, so no more falling happens
+						m_falling = false; // this walker is no longer falling
+						m_lastPlatformCollision = platColl; // let the walker know what number was the last collided with
+						break;
+					}
+				}
+
+				platColl++; // increase the number of platforms checked
+			}
+		}
+
+		if (m_hitbox.getPosition().y > m_screenHeight + m_hitbox.getSize().y)
+		{ // if the walker falls off screen, we no longer require it to be active
+			std::cout << "Walker fell" << std::endl;
+			m_active = false;
 		}
 	}
 }

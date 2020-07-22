@@ -35,6 +35,7 @@ public:
 	void render(sf::RenderWindow& t_window) const;
 	inline bool isShot() const { return m_shot; };
 	inline sf::FloatRect getGlobalBounds() const { return m_body.getGlobalBounds(); };
+	inline void hit() { m_shot = false; m_moveDir = sf::Vector2f{ 0.0f, 0.0f };};
 };
 
 #endif

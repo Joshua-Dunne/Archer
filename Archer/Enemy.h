@@ -16,6 +16,7 @@ public:
 	Enemy();
 protected:
 	virtual void setupAnimations() = 0;
+	virtual void collisionHandling(sf::Time& dt) = 0;
 
 	sf::Vector2f m_movement;
 	sf::RectangleShape m_hitbox;
@@ -28,7 +29,6 @@ protected:
 public:
 	virtual void update(sf::Time& dt) = 0;
 	virtual void render(sf::RenderWindow& t_window) = 0;
-	virtual void collisionHandling(sf::Time& dt) = 0;
 };
 
 #endif

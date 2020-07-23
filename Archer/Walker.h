@@ -7,13 +7,15 @@ class Walker :
 {
 public:
 	Walker() = delete;
-	Walker(std::vector<Arrow*>& t_arrowRef, std::vector<Platform*>& t_platforms, sf::Vector2f t_startingPos);
+	Walker(std::vector<Arrow*>& t_arrowRef, std::vector<Platform*>& t_platforms, Player* t_playerRef);
 
 protected:
 	std::vector<Arrow*>& m_arrowRefs;
 	std::vector<Platform*>& m_platformRefs;
+	Player* m_playerRef;
 	virtual void setupAnimations();
 	virtual void collisionHandling(sf::Time& dt);
+	void activate(sf::Time& dt);
 
 private:
 	const float m_weight{ 4.0f };
@@ -32,6 +34,7 @@ private:
 public:
 	virtual void update(sf::Time& dt);
 	virtual void render(sf::RenderWindow& t_window);
+	virtual void initialize(sf::Vector2f t_pos);
 	
 
 };

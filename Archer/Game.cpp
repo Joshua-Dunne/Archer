@@ -46,7 +46,8 @@ Game::Game() : m_window(sf::VideoMode(m_screenWidth, m_screenHeight), "Archer")
 	m_chargeBar.setFillColor(sf::Color::Red);
 	m_chargeBar.setSize(sf::Vector2f{ 0.0f, 10.0f });
 
-	m_tempWalker = new Walker(m_arrows, m_platforms, sf::Vector2f{ 700.0f, 150.0f });
+	m_tempWalker = new Walker(m_arrows, m_platforms, m_player);
+	m_tempWalker->initialize(sf::Vector2f{ 1200.0f, 0.0f });
 }
 
 Game::~Game()
@@ -128,9 +129,9 @@ void Game::update(sf::Time& dt)
 {
 	m_player->update(dt);
 
-	for (auto manager : m_managers)
+	for (auto layerManager : m_managers)
 	{
-		manager.update(dt);
+		layerManager.update(dt);
 	}
 
 	moveView(dt);

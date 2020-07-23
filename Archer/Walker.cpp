@@ -1,39 +1,23 @@
 #include "Walker.h"
 
-Walker::Walker(std::vector<Arrow*>& t_arrowRef, std::vector<Platform*>& t_platforms, sf::Vector2f t_startingPos) :
+Walker::Walker(std::vector<Arrow*>& t_arrowRef, std::vector<Platform*>& t_platforms, Player* t_playerRef) :
 	m_arrowRefs(t_arrowRef),
 	m_platformRefs(t_platforms),
+	m_playerRef(t_playerRef),
 	Enemy()
 {
 	setupAnimations();
 
 	m_currAnim = &m_walkAnim;
 
-	m_startingPos = t_startingPos;
-
 	// hitbox set up
 	
-	m_animSprite.setPosition(t_startingPos);
 	m_hitbox.setSize(sf::Vector2f{ 16.0f, 16.0f });
 	m_hitbox.setOrigin(sf::Vector2f{ 8.0f, 8.0f });
 	m_hitbox.setFillColor(sf::Color::Red);
-	m_hitbox.setPosition(t_startingPos);
 	m_movement.x = -0.10f;
 	m_movement.y = 0.0f;
 	m_falling = true;
-	m_lastPlatformCollision = 0;
-
-	// we need to figure out what platform (if any) that the walker is currently above
-	for (auto& platform : m_platformRefs)
-	{
-		if (!platform->fallenOff(m_hitbox))
-		{
-			break; // since the enemy is within the range of this platform, they must be above it
-			// so we dont need to continue the loop anymore
-		}
-		
-		m_lastPlatformCollision++; // since it wasnt this platform, check the next one
-	}
 }
 
 void Walker::setupAnimations()
@@ -70,6 +54,8 @@ void Walker::setupAnimations()
 
 void Walker::update(sf::Time& dt)
 {
+	activate(dt);
+
 	if (m_active)
 	{
 		if (!m_dead)
@@ -99,7 +85,7 @@ void Walker::update(sf::Time& dt)
 				m_deathClock.restart();
 			}
 		}
-	}	
+	}
 }
 
 void Walker::render(sf::RenderWindow& t_window)
@@ -108,6 +94,41 @@ void Walker::render(sf::RenderWindow& t_window)
 	{
 		t_window.draw(m_animSprite);
 	}
+}
+
+void Walker::initialize(sf::Vector2f t_pos)
+{
+	m_startingPos = t_pos;
+
+	m_animSprite.setPosition(t_pos);
+	m_hitbox.setPosition(t_pos);
+
+	m_active = false; // not yet active
+	m_dead = false; // enemy is alive
+
+	m_lastPlatformCollision = 0;
+
+	// we need to figure out what platform (if any) that the walker is currently at
+	for (auto& platform : m_platformRefs)
+	{
+		if (!platform->fallenOff(m_hitbox))
+		{
+			break; // since the enemy is within the range of this platform, they must be above it
+			// so we dont need to continue the loop anymore
+		}
+
+		m_lastPlatformCollision++; // since it wasnt this platform, check the next one
+	}
+
+
+	// position the walker so they are now on top of the platform
+	m_animSprite.setPosition(m_animSprite.getPosition().x,
+				m_platformRefs[m_lastPlatformCollision]->getHitbox().getPosition().y - m_hitbox.getSize().y);
+	m_hitbox.setPosition(m_animSprite.getPosition());
+
+	m_movement.y = 0; // reset y movement, so no more falling happens
+	m_falling = false; // this walker is no longer falling
+		
 }
 
 void Walker::collisionHandling(sf::Time& dt)
@@ -170,8 +191,21 @@ void Walker::collisionHandling(sf::Time& dt)
 
 		if (m_hitbox.getPosition().y > m_screenHeight + m_hitbox.getSize().y)
 		{ // if the walker falls off screen, we no longer require it to be active
-			std::cout << "Walker fell" << std::endl;
 			m_active = false;
+			m_dead = true;
 		}
 	}
+}
+
+void Walker::activate(sf::Time& dt)
+{
+	if (!m_active && !m_dead)
+	{ // make sure walker is ready to be activated, and isn't dead currently
+		if (m_hitbox.getPosition().x < m_playerRef->getPosition().x + (m_screenWidth / 2.0f) + m_hitbox.getSize().x
+			&& m_hitbox.getPosition().x > m_playerRef->getPosition().x - (m_screenWidth / 2.0f) + m_hitbox.getSize().x)
+		{ // if the sprite is within the range of the camera (player + and - screen's width, as the player is centered)
+			m_active = true;
+		}
+	}
+		
 }

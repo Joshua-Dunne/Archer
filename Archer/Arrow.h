@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
-#include <Thor/Vectors.hpp>
 #include "Bow.h"
 #include "globals.h"
 

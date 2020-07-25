@@ -25,7 +25,6 @@ private:
 	
 	sf::Vector2f m_startingPos;
 
-	bool m_active{ true };
 	bool m_dead{ false };
 
 	sf::Clock m_deathClock;

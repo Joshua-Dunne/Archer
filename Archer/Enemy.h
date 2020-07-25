@@ -8,6 +8,7 @@
 #include "Arrow.h"
 #include "Platform.h"
 #include "Player.h"
+#include "EnemyType.h"
 
 // Pure Virtual Class - Base of all Enemies
 
@@ -26,8 +27,13 @@ protected:
 	Animation* m_currAnim;
 	int m_lastPlatformCollision;
 	bool m_falling;
+	
 
 public:
+	bool m_active;
+	bool m_placed;
+	EnemyType m_type;
+
 	virtual void update(sf::Time& dt) = 0;
 	virtual void render(sf::RenderWindow& t_window) = 0;
 	virtual void initialize(sf::Vector2f t_pos) = 0; // used to place and prep enemies

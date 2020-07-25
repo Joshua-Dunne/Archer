@@ -15,9 +15,9 @@ Walker::Walker(std::vector<Arrow*>& t_arrowRef, std::vector<Platform*>& t_platfo
 	m_hitbox.setSize(sf::Vector2f{ 16.0f, 16.0f });
 	m_hitbox.setOrigin(sf::Vector2f{ 8.0f, 8.0f });
 	m_hitbox.setFillColor(sf::Color::Red);
-	m_movement.x = -0.10f;
+	m_movement.x = -0.1f;
 	m_movement.y = 0.0f;
-	m_falling = true;
+	m_type = EnemyType::WalkerEnem;
 }
 
 void Walker::setupAnimations()
@@ -82,6 +82,10 @@ void Walker::update(sf::Time& dt)
 			if (m_deathClock.getElapsedTime().asSeconds() > 2.0f)
 			{
 				m_active = false;
+				m_placed = false;
+				m_currAnim = &m_walkAnim; // reset animationm
+				m_movement.x = -0.1f;
+				m_animSprite.setLooped(true);
 				m_deathClock.restart();
 			}
 		}
@@ -105,6 +109,7 @@ void Walker::initialize(sf::Vector2f t_pos)
 
 	m_active = false; // not yet active
 	m_dead = false; // enemy is alive
+	m_placed = true;
 
 	m_lastPlatformCollision = 0;
 
@@ -192,6 +197,7 @@ void Walker::collisionHandling(sf::Time& dt)
 		if (m_hitbox.getPosition().y > m_screenHeight + m_hitbox.getSize().y)
 		{ // if the walker falls off screen, we no longer require it to be active
 			m_active = false;
+			m_placed = false;
 			m_dead = true;
 		}
 	}

@@ -57,7 +57,7 @@ void Bow::increaseMultiplier(sf::Time& dt)
         m_speedMultiplier += dt.asMilliseconds() / 1000.0f; 
 
 #ifdef _DEBUG
-            std::cout << "Current Multiplier: " << m_speedMultiplier << std::endl;
+            //std::cout << "Current Multiplier: " << m_speedMultiplier << std::endl;
 #endif
     }
 }

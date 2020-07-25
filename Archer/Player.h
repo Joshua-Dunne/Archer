@@ -51,7 +51,7 @@ private:
 	bool m_jumping{ false };
 	bool m_stomping{ false };
 	bool m_dashing{ false };
-	bool m_fell{ false };
+	
 
 	sf::Time m_dashCounter;
 
@@ -68,6 +68,8 @@ private:
 	
 
 public:
+	bool m_fell{ false };
+
 	void update(sf::Time& dt);
 	void render(sf::RenderWindow& t_window);
 

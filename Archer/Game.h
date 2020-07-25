@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include "Player.h"
 #include "LayerManager.h"
+#include "EnemyManager.h"
 #include "Platform.h"
 #include "Bow.h"
 #include "Arrow.h"
@@ -25,7 +26,8 @@ private:
 
 	float m_gravity{ 0.035f };
 	
-	std::vector<LayerManager> m_managers;
+	std::vector<LayerManager> m_layerManagers;
+	EnemyManager* m_enemyManager;
 
 	std::vector<Platform*> m_platforms;
 
@@ -38,8 +40,6 @@ private:
 	sf::RectangleShape m_chargeBar;
 
 	sf::Texture m_arrowTex;
-
-	Walker* m_tempWalker;
 
 	bool m_mouseHeld{ false };
 

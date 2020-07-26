@@ -3,5 +3,6 @@
 enum class EnemyType
 {
 	None,
-	WalkerEnem
+	WalkerEnem,
+	TrackerEnem
 };

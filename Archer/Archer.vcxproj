@@ -32,6 +32,7 @@
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SpawnPoint.cpp" />
+    <ClCompile Include="Tracker.cpp" />
     <ClCompile Include="Walker.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -49,6 +50,7 @@
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SpawnPoint.h" />
+    <ClInclude Include="Tracker.h" />
     <ClInclude Include="Walker.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

@@ -19,6 +19,7 @@ public:
 protected:
 	virtual void setupAnimations() = 0;
 	virtual void collisionHandling(sf::Time& dt) = 0;
+	virtual void activate(sf::Time& dt) = 0;
 
 	sf::Vector2f m_movement;
 	sf::RectangleShape m_hitbox;
@@ -32,7 +33,7 @@ public:
 	EnemyType m_type;
 
 	virtual void update(sf::Time& dt) = 0;
-	virtual void render(sf::RenderWindow& t_window) = 0;
+	virtual void render(sf::RenderWindow& t_window) const = 0;
 	virtual void initialize(sf::Vector2f t_pos) = 0; // used to place and prep enemies
 };
 

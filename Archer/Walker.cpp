@@ -92,7 +92,7 @@ void Walker::update(sf::Time& dt)
 	}
 }
 
-void Walker::render(sf::RenderWindow& t_window)
+void Walker::render(sf::RenderWindow& t_window) const
 {
 	if (m_active)
 	{

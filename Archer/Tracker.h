@@ -39,7 +39,9 @@ private:
 	bool m_falling;
 
 	const float m_visionRadius{ 90.0f };
+	const float m_speed{ 0.15f };
 	bool m_foundPlayer{ false };
+	bool m_nearPlayer{ false };
 
 	sf::RectangleShape m_knifeHitbox;
 	

@@ -6,8 +6,6 @@ Tracker::Tracker(std::vector<Arrow*>& t_arrowRef, std::vector<Platform*>& t_plat
 {
 	setupAnimations();
 
-	std::cout << "Tracker at: X: " << m_animSprite.getPosition().x << ", Y: " << m_animSprite.getPosition().y << std::endl;
-
 	// hitbox set up
 	m_hitbox.setSize(sf::Vector2f{ 16.0f, 16.0f });
 	m_hitbox.setOrigin(sf::Vector2f{ 8.0f, 8.0f });
@@ -49,9 +47,9 @@ void Tracker::setupAnimations()
 
 	// attack anim sizes differ so we have to do it manually
 	m_attackAnim.addFrame(sf::IntRect(0, 32, 16, 16));
-	m_attackAnim.addFrame(sf::IntRect(16, 32, 16, 16));
-	m_attackAnim.addFrame(sf::IntRect(32, 32, 16, 20));
-	m_attackAnim.addFrame(sf::IntRect(48, 32, 16, 20));
+	m_attackAnim.addFrame(sf::IntRect(28, 32, 16, 16));
+	m_attackAnim.addFrame(sf::IntRect(51, 32, 20, 16));
+	m_attackAnim.addFrame(sf::IntRect(74, 32, 20, 16));
 
 	m_animSprite.setScale(2.0f, 2.0f);
 
@@ -165,15 +163,7 @@ void Tracker::update(sf::Time& dt)
 	{
 		if (!m_dead)
 		{
-			if (m_movement.x < 0.0f)
-			{
-				m_animSprite.setScale(-2.0f, 2.0f);
-			}
-			else if (m_movement.x > 0.0f)
-			{
-				m_animSprite.setScale(2.0f, 2.0f);
-			}
-			// don't do any sprite flipping if the tracker isn't moving
+			m_nearPlayer = false;
 
 			if (m_falling)
 			{
@@ -187,29 +177,53 @@ void Tracker::update(sf::Time& dt)
 					m_foundPlayer = false; // then the tracker will stop following the player
 					m_movement.x = 0.0f; // stop any x movement now that the tracker can't see the player
 					// y movement is unaffected so tracker is affected by gravity still
-					std::cout << "tracker forgot player!" << std::endl;
 				}
 				else
 				{ // otherwise keep following the player
-					std::cout << "tracker following player!" << std::endl;
 					// first we need to find which side the tracker is on
 					if (m_hitbox.getPosition().x < m_playerRef->getPosition().x - m_hitbox.getSize().x * 2.0f)
 					{ // if the tracker is on the left side of the player
-						m_movement.x = 0.15f;
+						m_nearPlayer = true;
+						m_currAnim = &m_walkAnim;
+						m_movement.x = m_speed;
 					}
 					else if (m_hitbox.getPosition().x > m_playerRef->getPosition().x + m_hitbox.getSize().x * 2.0f)
 					{ // if the tracker is on the left side of the player
-						m_movement.x = -0.15f;
+						m_nearPlayer = true;
+						m_currAnim = &m_walkAnim;
+						m_movement.x = -m_speed;
 					}
 					else
 					{
+						m_nearPlayer = true;
+
+						if (m_playerRef->getPosition().y == m_hitbox.getPosition().y)
+							m_currAnim = &m_attackAnim; // only attack if the player is on the ground
+						else
+							m_currAnim = &m_idleAnim; // otherwise wait for the player to land
+
 						m_movement.x = 0.0f;
 					}
 					// if the tracker is on neither side (or perfectly standing next to the player) then no movements are needed
-					// * TODO: Implement attacking if neither is true
 
+					// make it so the tracker will always try to look at where the player is when following
+					if (m_playerRef->getPosition().x > m_hitbox.getPosition().x)
+					{
+						m_animSprite.setScale(2.0f, 2.0f);
+					}
+					else
+					{
+						m_animSprite.setScale(-2.0f, 2.0f);
+					}
 
 				}
+			}
+
+			collisionHandling(dt);
+
+			if (!m_nearPlayer)
+			{
+				m_currAnim = &m_idleAnim;
 			}
 
 			m_animSprite.play(*m_currAnim);
@@ -221,8 +235,6 @@ void Tracker::update(sf::Time& dt)
 #ifdef _DEBUG
 			m_visionVisual.setPosition(m_animSprite.getPosition());
 #endif
-
-			collisionHandling(dt);
 
 			m_animSprite.update(dt);
 		}

@@ -20,7 +20,7 @@ private:
 	std::vector<SpawnPoint> m_spawnPoints;
 
 	const size_t c_MAX_WALKERS{ 3 };
-	const size_t c_MAX_TRACKERS{ 5 };
+	const size_t c_MAX_TRACKERS{ 1 };
 
 public:
 	void update(sf::Time& dt);

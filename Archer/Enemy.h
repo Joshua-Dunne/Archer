@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <math.h>
 #include "AnimatedSprite.hpp"
 #include "globals.h"
 #include "Arrow.h"

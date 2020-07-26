@@ -205,13 +205,12 @@ void Walker::collisionHandling(sf::Time& dt)
 
 void Walker::activate(sf::Time& dt)
 {
-	if (!m_active && !m_dead)
+	if (!m_active && !m_dead && m_placed)
 	{ // make sure walker is ready to be activated, and isn't dead currently
 		if (m_hitbox.getPosition().x < m_playerRef->getPosition().x + (m_screenWidth / 2.0f) + m_hitbox.getSize().x
 			&& m_hitbox.getPosition().x > m_playerRef->getPosition().x - (m_screenWidth / 2.0f) + m_hitbox.getSize().x)
 		{ // if the sprite is within the range of the camera (player + and - screen's width, as the player is centered)
 			m_active = true;
 		}
-	}
-		
+	}	
 }

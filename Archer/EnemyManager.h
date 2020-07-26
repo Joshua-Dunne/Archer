@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "Player.h"
 #include "Walker.h"
+#include "Tracker.h"
 #include "SpawnPoint.h"
 #include <vector>
 #include <typeinfo>
@@ -19,6 +20,7 @@ private:
 	std::vector<SpawnPoint> m_spawnPoints;
 
 	const size_t c_MAX_WALKERS{ 3 };
+	const size_t c_MAX_TRACKERS{ 5 };
 
 public:
 	void update(sf::Time& dt);

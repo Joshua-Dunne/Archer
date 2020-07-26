@@ -14,6 +14,15 @@ EnemyManager::EnemyManager(std::vector<Arrow*>& t_arrowRef, std::vector<Platform
 	{
 		m_enemies.push_back(new Walker(t_arrowRef, t_platforms, t_playerRef));
 	}
+
+	m_spawnPoints.push_back(SpawnPoint(sf::Vector2f{ 100.0f, 250.0f }, EnemyType::TrackerEnem));
+	m_spawnPoints.push_back(SpawnPoint(sf::Vector2f{ 150.0f, 250.0f }, EnemyType::TrackerEnem));
+	m_spawnPoints.push_back(SpawnPoint(sf::Vector2f{ 200.0f, 250.0f }, EnemyType::TrackerEnem));
+
+	for (size_t index = 0; index < c_MAX_TRACKERS; ++index)
+	{
+		m_enemies.push_back(new Tracker(t_arrowRef, t_platforms, t_playerRef));
+	}
 	
 }
 

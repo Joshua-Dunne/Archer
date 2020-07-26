@@ -30,6 +30,9 @@ private:
 	sf::Clock m_deathClock;
 	sf::Time m_deathCounter;
 
+	int m_lastPlatformCollision;
+	bool m_falling;
+
 public:
 	virtual void update(sf::Time& dt);
 	virtual void render(sf::RenderWindow& t_window);

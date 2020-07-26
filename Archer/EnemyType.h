@@ -1,6 +1,6 @@
 #pragma once
 
-enum EnemyType
+enum class EnemyType
 {
 	None,
 	WalkerEnem

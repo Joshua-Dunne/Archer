@@ -25,9 +25,6 @@ protected:
 	sf::Texture m_spriteTexture;
 	AnimatedSprite m_animSprite;
 	Animation* m_currAnim;
-	int m_lastPlatformCollision;
-	bool m_falling;
-	
 
 public:
 	bool m_active;

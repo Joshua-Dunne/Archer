@@ -10,7 +10,7 @@ EnemyManager::EnemyManager(std::vector<Arrow*>& t_arrowRef, std::vector<Platform
 	m_spawnPoints.push_back(SpawnPoint(sf::Vector2f{ 2000.0f, 250.0f }, EnemyType::WalkerEnem));
 	m_spawnPoints.push_back(SpawnPoint(sf::Vector2f{ 2400.0f, 250.0f }, EnemyType::WalkerEnem));
 
-	for (int index = 0; index < c_MAX_WALKERS; ++index)
+	for (size_t index = 0; index < c_MAX_WALKERS; ++index)
 	{
 		m_enemies.push_back(new Walker(t_arrowRef, t_platforms, t_playerRef));
 	}
@@ -80,7 +80,7 @@ SpawnPoint*	EnemyManager::findSpawn(EnemyType& t_enemyType)
 	}
 
 	// if no spawn was found, just return a spawnpoint with type none
-	return new SpawnPoint(sf::Vector2f{}, None);
+	return new SpawnPoint(sf::Vector2f{}, EnemyType::None);
 }
 
 
@@ -94,7 +94,7 @@ void EnemyManager::resetUsable()
 		points.m_used = false;
 	}
 
-	for (int index = 0; index < c_MAX_WALKERS; ++index)
+	for (size_t index = 0; index < c_MAX_WALKERS; ++index)
 	{
 		m_enemies[index]->initialize(m_spawnPoints[index].m_spawnPos); // place available enemies at first few spawn points
 		m_spawnPoints[index].m_used = true;

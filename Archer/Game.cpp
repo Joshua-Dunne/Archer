@@ -112,7 +112,7 @@ void Game::processInput()
 				{
 					if (!arrow->isShot())
 					{
-						arrow->shoot(m_bow->getMultiplier()); // find the next available arrow and shoot it
+						arrow->shoot(); // find the next available arrow and shoot it
 						m_bow->resetMultiplier();
 						m_mouseHeld = false;
 						m_chargeBar.setSize(sf::Vector2f{ 0.0f, 10.0f }); //reset charge bar

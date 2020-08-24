@@ -11,14 +11,17 @@ public:
 
 protected:
 	virtual void setupAnimations();
-	virtual void collisionHandling(sf::Time& dt);
 	virtual void activate(sf::Time& dt);
+	virtual void collisionHandling(sf::Time& dt);
 
 	std::vector<Arrow*>& m_arrowRefs;
 	std::vector<Platform*>& m_platformRefs;
 	Player* m_playerRef;
 
 private:
+	void movementHandling(sf::Time& dt);
+	void attackHandling(sf::Time& dt);
+
 	const float m_weight{ 5.5f };
 
 	Animation m_idleAnim;
@@ -37,6 +40,10 @@ private:
 
 	int m_lastPlatformCollision;
 	bool m_falling;
+
+	sf::RectangleShape m_attackHitbox;
+	bool m_attackActive{ false };
+	sf::Time m_attackActiveClock;
 
 	const float m_visionRadius{ 90.0f };
 	const float m_speed{ 0.15f };

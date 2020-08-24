@@ -12,7 +12,7 @@ Arrow::~Arrow()
 	std::cout << "arrow destructor called" << std::endl;
 }
 
-void Arrow::shoot(float t_speedMultiplier)
+void Arrow::shoot()
 {
 	if (!m_shot)
 	{
@@ -27,7 +27,7 @@ void Arrow::shoot(float t_speedMultiplier)
 		m_body.setRotation(atan2(m_moveDir.y, m_moveDir.x) * 3.14159f / 180.0f);
 
 		// multiply unit vector by shot speed, so it will move faster in the chosen direction
-		m_moveDir *= (m_shotSpeed * t_speedMultiplier);
+		m_moveDir *= (m_shotSpeed * m_bowRef->getMultiplier());
 
 		m_moveDir.x += m_bowRef->getMovement(); 
 		// add to x movement any movement the bow is also feeling at the moment an arrow is shot

@@ -28,7 +28,7 @@ private:
 	bool m_shot{ false };
 
 public:
-	void shoot(float t_speedMultiplier);
+	void shoot();
 	void update(sf::Time& dt);
 	void collisionHandling(sf::Time& dt);
 	void render(sf::RenderWindow& t_window) const;

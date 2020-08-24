@@ -9,7 +9,6 @@ Tracker::Tracker(std::vector<Arrow*>& t_arrowRef, std::vector<Platform*>& t_plat
 	// hitbox set up
 	m_hitbox.setSize(sf::Vector2f{ 16.0f, 16.0f });
 	m_hitbox.setOrigin(sf::Vector2f{ 8.0f, 8.0f });
-	m_hitbox.setFillColor(sf::Color::Red);
 	m_movement.x = 0.0f;
 	m_movement.y = 0.0f;
 	m_type = EnemyType::TrackerEnem;
@@ -17,6 +16,16 @@ Tracker::Tracker(std::vector<Arrow*>& t_arrowRef, std::vector<Platform*>& t_plat
 	m_visionVisual.setRadius(m_visionRadius);
 	m_visionVisual.setOrigin(sf::Vector2f{ m_visionRadius, m_visionRadius });
 	m_visionVisual.setFillColor(sf::Color{ 255,0,0,64 });
+
+	m_attackHitbox.setSize(sf::Vector2f{ 6.0f, 4.0f });
+	m_attackHitbox.setOrigin(3.0f, 2.0f);
+
+#ifdef _DEBUG
+	// hitbox only needs a color if in debug mode, so it can be more easily seen through debugging
+	m_hitbox.setFillColor(sf::Color::Red);
+	m_attackHitbox.setFillColor(sf::Color::Yellow);
+#endif
+	
 }
 
 void Tracker::setupAnimations()
@@ -58,6 +67,18 @@ void Tracker::setupAnimations()
 	m_currAnim = &m_idleAnim;
 }
 
+void Tracker::activate(sf::Time& dt)
+{
+	if (!m_active && !m_dead && m_placed)
+	{ // make sure tracker is ready to be activated, and isn't dead currently, and has been placed at a spawn point
+		if (m_hitbox.getPosition().x < m_playerRef->getPosition().x + (m_screenWidth / 2.0f) + (m_hitbox.getSize().x * 2.0f)
+			&& m_hitbox.getPosition().x > m_playerRef->getPosition().x - (m_screenWidth / 2.0f) + (m_hitbox.getSize().x * 2.0f))
+		{ // if the hitbox is within the range of the camera (player + and - screen's width, as the player is centered)
+			m_active = true;
+		}
+	}
+}
+
 void Tracker::collisionHandling(sf::Time& dt)
 {
 	if (!m_dead && m_active) // if the enemy is still alive and active
@@ -85,6 +106,7 @@ void Tracker::collisionHandling(sf::Time& dt)
 					m_currAnim = &m_deathAnim;
 					m_animSprite.setLooped(false);
 					m_deathClock.restart();
+					break; // only 1 arrow can hit a tracker at any one time, so get out of the loop if one hits
 				}
 			}
 		}
@@ -139,18 +161,103 @@ void Tracker::collisionHandling(sf::Time& dt)
 				// any frame where the tracker is still within range of the player
 			}
 		}
-		
+
+		if (m_attackActive) // if the tracker is at the right frame for his attack
+		{
+			if (m_attackHitbox.getGlobalBounds().intersects(m_playerRef->getHitBoxBounds()))
+			{ // see if the player's hitbox is within the attack hitbox
+				std::cout << "Player hit!" << std::endl;
+
+				// TODO: Implement player collisions
+
+			}
+		}
+
 	}
 }
 
-void Tracker::activate(sf::Time& dt)
+void Tracker::movementHandling(sf::Time& dt)
 {
-	if (!m_active && !m_dead && m_placed)
-	{ // make sure tracker is ready to be activated, and isn't dead currently, and has been placed at a spawn point
-		if (m_hitbox.getPosition().x < m_playerRef->getPosition().x + (m_screenWidth / 2.0f) + (m_hitbox.getSize().x * 2.0f)
-			&& m_hitbox.getPosition().x > m_playerRef->getPosition().x - (m_screenWidth / 2.0f) + (m_hitbox.getSize().x * 2.0f))
-		{ // if the hitbox is within the range of the camera (player + and - screen's width, as the player is centered)
-			m_active = true;
+	if (m_foundPlayer) // as long as the tracker knows the player is there
+	{
+		if (m_memoryClock.getElapsedTime().asSeconds() > m_memoryCounter.asSeconds())
+		{ // if the tracker goes over the amount of time he can remember the player
+			m_foundPlayer = false; // then the tracker will stop following the player
+			m_movement.x = 0.0f; // stop any x movement now that the tracker can't see the player
+			// y movement is unaffected so tracker is affected by gravity still
+		}
+		else
+		{ // otherwise keep following the player
+			// first we need to find which side the tracker is on
+			if (m_hitbox.getPosition().x < m_playerRef->getPosition().x - m_hitbox.getSize().x * 2.0f)
+			{ // if the tracker is on the left side of the player
+				m_nearPlayer = true;
+				m_currAnim = &m_walkAnim;
+				m_movement.x = m_speed;
+			}
+			else if (m_hitbox.getPosition().x > m_playerRef->getPosition().x + m_hitbox.getSize().x * 2.0f)
+			{ // if the tracker is on the left side of the player
+				m_nearPlayer = true;
+				m_currAnim = &m_walkAnim;
+				m_movement.x = -m_speed;
+			}
+			else
+			{
+				m_nearPlayer = true;
+
+				if (m_playerRef->getPosition().y == m_hitbox.getPosition().y)
+					m_currAnim = &m_attackAnim; // only attack if the player is on the ground
+				else
+					m_currAnim = &m_idleAnim; // otherwise wait for the player to land
+
+				m_movement.x = 0.0f;
+			}
+			// if the tracker is on neither side (or perfectly standing next to the player) then no movements are needed
+
+			// make it so the tracker will always try to look at where the player is when following
+			if (m_playerRef->getPosition().x > m_hitbox.getPosition().x)
+			{
+				m_animSprite.setScale(2.0f, 2.0f);
+			}
+			else
+			{
+				m_animSprite.setScale(-2.0f, 2.0f);
+			}
+
+		}
+	}
+}
+
+void Tracker::attackHandling(sf::Time& dt)
+{
+	if (m_active)
+	{
+		if (m_animSprite.getScale().x > 0.0f)
+		{ // if greater than 0, tracker is facing to the right
+			m_attackHitbox.setPosition(m_animSprite.getPosition() + sf::Vector2f{ 20.0f, -3.0f });
+		} // otherwise tracker is facing to the left
+		else
+		{
+			m_attackHitbox.setPosition(m_animSprite.getPosition() + sf::Vector2f{ -20.0f, -3.0f });
+		}
+
+		if (*(&m_currAnim) == &m_attackAnim) // check if the address values are the same first
+		{
+			m_attackActiveClock += m_animSprite.getFrameTime() * dt.asSeconds();
+
+			if (m_attackActiveClock.asSeconds() > (m_animSprite.getFrameTime().asSeconds() * dt.asSeconds()) * 25.0f)
+			{
+				m_attackActive = true;
+				m_attackActiveClock = sf::Time{ sf::seconds(0) }; // reset time back to default
+			}
+			else
+			{
+				m_attackActive = false;
+			}
+		}
+		else
+		{
+			m_attackActive = false; // default the active hitbox to false if the tracker isn't attacking
 		}
 	}
 }
@@ -170,60 +277,14 @@ void Tracker::update(sf::Time& dt)
 				m_movement.y += (m_gravity * m_weight) / dt.asMilliseconds(); //  * dt.asMilliseconds()
 			}
 
-			if (m_foundPlayer) // as long as the tracker knows the player is there
-			{
-				if (m_memoryClock.getElapsedTime().asSeconds() > m_memoryCounter.asSeconds())
-				{ // if the tracker goes over the amount of time he can remember the player
-					m_foundPlayer = false; // then the tracker will stop following the player
-					m_movement.x = 0.0f; // stop any x movement now that the tracker can't see the player
-					// y movement is unaffected so tracker is affected by gravity still
-				}
-				else
-				{ // otherwise keep following the player
-					// first we need to find which side the tracker is on
-					if (m_hitbox.getPosition().x < m_playerRef->getPosition().x - m_hitbox.getSize().x * 2.0f)
-					{ // if the tracker is on the left side of the player
-						m_nearPlayer = true;
-						m_currAnim = &m_walkAnim;
-						m_movement.x = m_speed;
-					}
-					else if (m_hitbox.getPosition().x > m_playerRef->getPosition().x + m_hitbox.getSize().x * 2.0f)
-					{ // if the tracker is on the left side of the player
-						m_nearPlayer = true;
-						m_currAnim = &m_walkAnim;
-						m_movement.x = -m_speed;
-					}
-					else
-					{
-						m_nearPlayer = true;
-
-						if (m_playerRef->getPosition().y == m_hitbox.getPosition().y)
-							m_currAnim = &m_attackAnim; // only attack if the player is on the ground
-						else
-							m_currAnim = &m_idleAnim; // otherwise wait for the player to land
-
-						m_movement.x = 0.0f;
-					}
-					// if the tracker is on neither side (or perfectly standing next to the player) then no movements are needed
-
-					// make it so the tracker will always try to look at where the player is when following
-					if (m_playerRef->getPosition().x > m_hitbox.getPosition().x)
-					{
-						m_animSprite.setScale(2.0f, 2.0f);
-					}
-					else
-					{
-						m_animSprite.setScale(-2.0f, 2.0f);
-					}
-
-				}
-			}
-
+			
+			movementHandling(dt);
+			attackHandling(dt);
 			collisionHandling(dt);
 
-			if (!m_nearPlayer)
+			if (!m_nearPlayer && !m_dead) // if not near the player and not dead
 			{
-				m_currAnim = &m_idleAnim;
+				m_currAnim = &m_idleAnim; // show visual idle
 			}
 
 			m_animSprite.play(*m_currAnim);
@@ -264,6 +325,7 @@ void Tracker::render(sf::RenderWindow& t_window) const
 
 #ifdef _DEBUG
 		t_window.draw(m_visionVisual);
+		t_window.draw(m_attackHitbox);
 #endif
 	}
 }

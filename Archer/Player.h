@@ -78,6 +78,7 @@ public:
 	inline sf::Vector2f getPosition() const { return m_animSprite.getPosition(); };
 	inline bool isDashing() const { return m_dashing; };
 	inline bool hasFell() const { return m_fell; };
+	inline sf::FloatRect getHitBoxBounds() const { return m_hitbox.getGlobalBounds(); };
 	void fallHandling();
 };
 

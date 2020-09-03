@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Walker.h"
 #include "Tracker.h"
+#include "Flyer.h"
 #include "SpawnPoint.h"
 #include <vector>
 #include <typeinfo>
@@ -21,6 +22,7 @@ private:
 
 	const size_t c_MAX_WALKERS{ 3 };
 	const size_t c_MAX_TRACKERS{ 1 };
+	const size_t c_MAX_FLYERS{ 1 };
 
 public:
 	void update(sf::Time& dt);

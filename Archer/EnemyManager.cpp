@@ -21,6 +21,13 @@ EnemyManager::EnemyManager(std::vector<Arrow*>& t_arrowRef, std::vector<Platform
 	{
 		m_enemies.push_back(new Tracker(t_arrowRef, t_platforms, t_playerRef));
 	}
+
+	m_spawnPoints.push_back(SpawnPoint(sf::Vector2f{ 700.0f, 450.0f }, EnemyType::FlyerEnem));
+
+	for (size_t index = 0; index < c_MAX_FLYERS; ++index)
+	{
+		m_enemies.push_back(new Flyer(t_arrowRef, t_platforms, t_playerRef));
+	}
 	
 }
 

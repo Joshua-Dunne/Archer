@@ -26,6 +26,7 @@
     <ClCompile Include="Bow.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
+    <ClCompile Include="Flyer.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="LayerManager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -44,6 +45,7 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="EnemyType.h" />
+    <ClInclude Include="Flyer.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="LayerManager.h" />

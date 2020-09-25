@@ -71,7 +71,23 @@ void EnemyManager::checkInactive()
 
 		if (point->m_type != EnemyType::None && !point->m_used)
 		{
-			std::cout << "Placed enemy at X: " << point->m_spawnPos.x << ", Y: " << point->m_spawnPos.y << std::endl;
+#ifdef _DEBUG
+			switch (point->m_type)
+			{
+			case EnemyType::WalkerEnem:
+				std::cout << "Placed Walker at X: " << point->m_spawnPos.x << ", Y: " << point->m_spawnPos.y << std::endl;
+				break;
+			case EnemyType::TrackerEnem:
+				std::cout << "Placed Tracker at X: " << point->m_spawnPos.x << ", Y: " << point->m_spawnPos.y << std::endl;
+				break;
+			case EnemyType::FlyerEnem:
+				std::cout << "Placed Flyer at X: " << point->m_spawnPos.x << ", Y: " << point->m_spawnPos.y << std::endl;
+				break;
+			default:
+				throw("oof ouch my bones");
+				break;
+			}
+#endif
 			inactiveEnemy->initialize(point->m_spawnPos);
 			point->m_used = true;
 		}

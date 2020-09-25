@@ -37,7 +37,7 @@ private:
 	const float m_weight{ 2.5f };
 	const float m_maxFlightSpeed{ 30.0f };
 	const float m_maxVerticalSpeed{ 85.0f };
-	const float m_initialSpeedBurst{ 25.0f };
+	const float m_initialSpeedBurst{ 100.0f };
 	const float m_horizontalSpeed{ 5.0f };
 
 	int m_lastPlatformCollision{ 0 };

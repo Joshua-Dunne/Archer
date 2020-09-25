@@ -21,17 +21,20 @@ void Flyer::setupAnimations()
 	m_fallAnim.setSpriteSheet(m_spriteTexture);
 	m_deathAnim.setSpriteSheet(m_spriteTexture);
 
-	for (int index = 0; index < 5; ++index) // 8 sprites for walk animation
+	for (int index = 0; index < 5; ++index) // 6 sprites for death animation
 	{
 		m_deathAnim.addFrame(sf::IntRect(index * 8, 0, 8, 8));
 	}
 
-	for (int index = 0; index < 3; ++index) // 8 sprites for walk animation
+	// 6th one is added after the loop
+	m_deathAnim.addFrame(sf::IntRect(32, 8, 8, 8));
+
+	for (int index = 0; index < 3; ++index) // 3 sprites for idle animation
 	{
 		m_idleAnim.addFrame(sf::IntRect(index * 8, 8, 8, 8));
 	}
 
-	for (int index = 0; index < 3; ++index) // 8 sprites for walk animation
+	for (int index = 0; index < 3; ++index) // 3 sprites for flying animation
 	{
 		m_flyAnim.addFrame(sf::IntRect(index * 8, 24, 8, 8));
 	}
@@ -76,9 +79,27 @@ void Flyer::collisionHandling(sf::Time& dt)
 			if (arrow->getGlobalBounds().intersects(m_tempVision.getGlobalBounds()))
 			{
 				m_foundPlayer = true;
-				m_currAnim = &m_fallAnim;
+				m_currAnim = &m_flyAnim;
 				m_movement.y = -m_initialSpeedBurst;
 				break; // break out if one is found, since we don't need to check any further ones
+			}
+		}
+	}
+	else if (!m_dead && m_active)
+	{
+		for (auto& arrow : m_arrowRefs)
+		{
+			if (arrow->getGlobalBounds().intersects(m_hitbox.getGlobalBounds()))
+			{
+				// since the flyer was hit, begin the death animation
+				std::cout << "Flyer hit!" << std::endl;
+				arrow->hit(); // tell the arrow it hit something, so it can disable itself for use again
+				m_dead = true;
+				m_movement = sf::Vector2f{ 0.0f, 0.0f }; // stop any movement
+				m_currAnim = &m_deathAnim;
+				m_animSprite.setLooped(false);
+				m_deathClock.restart();
+				break; // only 1 arrow can hit a flyer at any one time, so get out of the loop if one hits
 			}
 		}
 	}

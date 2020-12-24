@@ -93,7 +93,9 @@ void EnemyManager::checkInactive()
 		}
 		else
 		{
-			//std::cout << "No spawn available!" << std::endl;
+#ifdef _DEBUG
+			std::cout << "No spawn available!" << std::endl;
+#endif
 			delete point; // since the returned pointer is no longer needed, clean it up
 		}
 	}

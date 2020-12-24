@@ -18,6 +18,8 @@ Walker::Walker(std::vector<Arrow*>& t_arrowRef, std::vector<Platform*>& t_platfo
 	m_movement.x = -0.1f;
 	m_movement.y = 0.0f;
 	m_type = EnemyType::WalkerEnem;
+
+	m_deathCounter = sf::seconds(2.0f);
 }
 
 void Walker::setupAnimations()
@@ -79,7 +81,7 @@ void Walker::update(sf::Time& dt)
 			m_animSprite.play(*m_currAnim);
 			m_animSprite.update(dt);
 
-			if (m_deathClock.getElapsedTime().asSeconds() > 2.0f)
+			if (m_deathClock.getElapsedTime().asSeconds() > m_deathCounter.asSeconds())
 			{
 				m_active = false;
 				m_placed = false;
@@ -156,7 +158,9 @@ void Walker::collisionHandling(sf::Time& dt)
 				if (m_hitbox.getGlobalBounds().intersects(arrow->getGlobalBounds()))
 				{
 					// since the walker was hit, begin the death animation
+#ifdef _DEBUG
 					std::cout << "Walker hit!" << std::endl;
+#endif
 					arrow->hit(); // tell the arrow it hit something, so it can disable itself for use again
 					m_dead = true;
 					m_movement = sf::Vector2f{ 0.0f, 0.0f }; // stop any movement

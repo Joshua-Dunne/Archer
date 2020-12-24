@@ -9,7 +9,9 @@ Arrow::Arrow(Bow* t_bow, sf::Texture& t_tex) : m_bowRef(t_bow), m_arrowTex(t_tex
 
 Arrow::~Arrow()
 {
+#ifdef _DEBUG
 	std::cout << "arrow destructor called" << std::endl;
+#endif
 }
 
 void Arrow::shoot()

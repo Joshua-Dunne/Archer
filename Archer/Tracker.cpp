@@ -6,6 +6,8 @@ Tracker::Tracker(std::vector<Arrow*>& t_arrowRef, std::vector<Platform*>& t_plat
 {
 	setupAnimations();
 
+	m_deathCounter = sf::seconds(2.0f);
+
 	// hitbox set up
 	m_hitbox.setSize(sf::Vector2f{ 16.0f, 16.0f });
 	m_hitbox.setOrigin(sf::Vector2f{ 8.0f, 8.0f });
@@ -99,7 +101,9 @@ void Tracker::collisionHandling(sf::Time& dt)
 				if (m_hitbox.getGlobalBounds().intersects(arrow->getGlobalBounds()))
 				{
 					// since the tracker was hit, begin the death animation
+#ifdef _DEBUG
 					std::cout << "Tracker hit!" << std::endl;
+#endif
 					arrow->hit(); // tell the arrow it hit something, so it can disable itself for use again
 					m_dead = true;
 					m_movement = sf::Vector2f{ 0.0f, 0.0f }; // stop any movement
@@ -301,7 +305,7 @@ void Tracker::update(sf::Time& dt)
 			m_animSprite.play(*m_currAnim);
 			m_animSprite.update(dt);
 
-			if (m_deathClock.getElapsedTime().asSeconds() > 2.0f)
+			if (m_deathClock.getElapsedTime().asSeconds() > m_deathCounter.asSeconds())
 			{
 				m_active = false;
 				m_placed = false;

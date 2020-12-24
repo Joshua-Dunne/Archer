@@ -15,6 +15,7 @@ protected:
 	virtual void setupAnimations();
 	virtual void collisionHandling(sf::Time& dt);
 	virtual void activate(sf::Time& dt);
+	void checkPlayerCol(sf::Time& dt);
 
 	std::vector<Arrow*>& m_arrowRefs;
 	std::vector<Platform*>& m_platformRefs;

@@ -108,6 +108,8 @@ void Flyer::collisionHandling(sf::Time& dt)
 				break; // only 1 arrow can hit a flyer at any one time, so get out of the loop if one hits
 			}
 		}
+
+		checkPlayerCol(dt);
 	}
 }
 
@@ -265,5 +267,16 @@ void Flyer::movementHandling(sf::Time& dt)
 			}
 		}
 	
+	}
+}
+
+void Flyer::checkPlayerCol(sf::Time& dt)
+{
+	if (m_hitbox.getGlobalBounds().intersects(m_playerRef->getHitBoxBounds()))
+	{
+#ifdef _DEBUG
+		//std::cout << "Player touched by Walker!" << std::endl;
+#endif
+		m_playerRef->killPlayer();
 	}
 }

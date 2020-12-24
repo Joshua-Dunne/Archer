@@ -171,7 +171,6 @@ void Walker::collisionHandling(sf::Time& dt)
 			}
 		}
 
-
 		if (m_movement.y > 0.0f && m_falling)
 		{
 			int platColl = 0; // start back at 0 for the last platform checked for collision
@@ -204,6 +203,8 @@ void Walker::collisionHandling(sf::Time& dt)
 			m_placed = false;
 			m_dead = true;
 		}
+
+		checkPlayerCol(dt);
 	}
 }
 
@@ -217,4 +218,15 @@ void Walker::activate(sf::Time& dt)
 			m_active = true;
 		}
 	}	
+}
+
+void Walker::checkPlayerCol(sf::Time& dt)
+{
+	if (m_hitbox.getGlobalBounds().intersects(m_playerRef->getHitBoxBounds()))
+	{
+#ifdef _DEBUG
+		//std::cout << "Player touched by Walker!" << std::endl;
+#endif
+		m_playerRef->killPlayer();
+	}
 }

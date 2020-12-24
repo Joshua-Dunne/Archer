@@ -343,6 +343,25 @@ void Player::collisionHandling(sf::Time& dt)
 }
 
 /// <summary>
+/// Handle player death after colliding with the big ouch
+/// </summary>
+void Player::deathHandling(sf::Time& dt)
+{
+	if (m_dead)
+	{
+		if (m_respawnClock.getElapsedTime().asSeconds() > 3.0f)
+		{
+			m_jumping = true;
+			m_fell = true;
+			m_dead = false;
+			m_movement.y = 0.0f;
+			m_animSprite.setPosition(400.0f, 50.0f);
+			m_animSprite.setLooped(true);
+		}
+	}
+}
+
+/// <summary>
 /// Handle player falling off bottom of screen
 /// </summary>
 void Player::fallHandling()
@@ -356,29 +375,52 @@ void Player::fallHandling()
 	}
 }
 
+void Player::killPlayer()
+{
+	if (!m_dead)
+	{
+		m_dead = true;
+		m_currentAnimation = &m_death;
+		m_animSprite.setLooped(false);
+		m_respawnClock.restart();
+	}
+}
+
+
+
 void Player::update(sf::Time& dt)
 {
-	m_fell = false;
-	m_animSprite.setScale(m_scale, m_scale);
+	if (!m_dead)
+	{
+		m_fell = false;
+		m_animSprite.setScale(m_scale, m_scale);
 
-	walkHandling(dt);
-	jumpHandling(dt);
-	dashHandling(dt);
-	stompHandling(dt);
-	idleHandling(dt);
-	fallHandling();
+		walkHandling(dt);
+		jumpHandling(dt);
+		dashHandling(dt);
+		stompHandling(dt);
+		idleHandling(dt);
+		fallHandling();
 
-	m_animSprite.play(*m_currentAnimation);
+		m_animSprite.play(*m_currentAnimation);
 
-	movementHandling(dt);
+		movementHandling(dt);
 
-	m_hitbox.setPosition(m_animSprite.getPosition()); // move the hitbox with the player sprite
+		m_hitbox.setPosition(m_animSprite.getPosition()); // move the hitbox with the player sprite
 
-	collisionHandling(dt);
+		collisionHandling(dt);
 
-	m_noKeyPressed = true;
-
-	m_animSprite.update(dt);
+		m_noKeyPressed = true;
+		m_animSprite.update(dt);
+	}
+	else
+	{
+		m_animSprite.play(*m_currentAnimation);
+		deathHandling(dt);
+		m_animSprite.update(dt);
+	}
+	
+	
 }
 
 void Player::render(sf::RenderWindow& t_window)

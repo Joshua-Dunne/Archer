@@ -53,8 +53,11 @@ private:
 	bool m_jumping{ false };
 	bool m_stomping{ false };
 	bool m_dashing{ false };
+	bool m_dead{ false };
 	
+	sf::Clock m_respawnClock; // clock that counts up time once player is dead
 
+	sf::Time m_respawnTime; // amount of time that must pass before the playe respawns
 	sf::Time m_dashCounter;
 
 	std::vector<Platform*> m_platforms;
@@ -67,7 +70,7 @@ private:
 	void idleHandling(sf::Time& dt);
 	void movementHandling(sf::Time& dt);
 	void collisionHandling(sf::Time& dt);
-	
+	void deathHandling(sf::Time& dt);
 
 public:
 	bool m_fell{ false };
@@ -82,6 +85,8 @@ public:
 	inline bool hasFell() const { return m_fell; };
 	inline sf::FloatRect getHitBoxBounds() const { return m_hitbox.getGlobalBounds(); };
 	void fallHandling();
+	void killPlayer();
+	
 };
 
 #endif

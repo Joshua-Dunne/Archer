@@ -166,10 +166,7 @@ void Tracker::collisionHandling(sf::Time& dt)
 		{
 			if (m_attackHitbox.getGlobalBounds().intersects(m_playerRef->getHitBoxBounds()))
 			{ // see if the player's hitbox is within the attack hitbox
-				std::cout << "Player hit!" << std::endl;
-
-				// TODO: Implement player collisions
-
+				m_playerRef->killPlayer();
 			}
 		}
 

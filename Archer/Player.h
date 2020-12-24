@@ -20,6 +20,7 @@ private:
 	sf::Texture m_risingTex;
 	sf::Texture m_fallingTex;
 	sf::Texture m_dashTex;
+	sf::Texture m_deathTex;
 
 	Animation* m_currentAnimation;
 	Animation m_walkLeft;
@@ -28,6 +29,7 @@ private:
 	Animation m_risingJump;
 	Animation m_fallingJump;
 	Animation m_dash;
+	Animation m_death;
 
 	AnimatedSprite m_animSprite;
 	sf::RectangleShape m_hitbox;

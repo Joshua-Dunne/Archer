@@ -55,6 +55,10 @@ void Player::setupAnimations()
 		std::cout << "Error loading jump down anim strip png" << std::endl;
 	}
 
+	if (!m_deathTex.loadFromFile("./resources/sprites/herochar_death.png"))
+	{
+		std::cout << "Error loading death png" << std::endl;
+	}
 
 	m_walkRight.setSpriteSheet(m_walkingTex);
 	m_walkLeft.setSpriteSheet(m_walkingTex);
@@ -83,6 +87,12 @@ void Player::setupAnimations()
 	for (int index = 0; index < 3; ++index)
 	{
 		m_fallingJump.addFrame(sf::IntRect(index * m_dimension, 0, m_dimension, m_dimension));
+	}
+
+	m_death.setSpriteSheet(m_deathTex);
+	for (int index = 0; index < 9; ++index)
+	{
+		m_death.addFrame(sf::IntRect(index * m_dimension, 0, m_dimension, m_dimension));
 	}
 }
 

@@ -63,8 +63,8 @@ bool Platform::checkCollision(const sf::RectangleShape& t_playerHitbox)
 
 bool Platform::fallenOff(const sf::RectangleShape& t_playerHitbox)
 {
-	if (t_playerHitbox.getPosition().x < m_hitbox.getPosition().x
-		|| t_playerHitbox.getPosition().x > m_hitbox.getPosition().x + m_hitbox.getGlobalBounds().width)
+	if (t_playerHitbox.getPosition().x + t_playerHitbox.getGlobalBounds().width / 2.0f < m_hitbox.getPosition().x
+		|| t_playerHitbox.getPosition().x - t_playerHitbox.getGlobalBounds().width / 2.0f > m_hitbox.getPosition().x + m_hitbox.getGlobalBounds().width)
 	{
 		return true;
 	}

@@ -322,8 +322,8 @@ void Player::collisionHandling(sf::Time& dt)
 		{
 			if (platform->checkCollision(m_hitbox))
 			{
-				if (m_hitbox.getPosition().y < platform->getHitbox().getPosition().y)
-				{ // if the player was above the hitbox
+				//if (m_hitbox.getPosition().y < platform->getHitbox().getPosition().y)
+				//{ // if the player was above the hitbox
 					// set player to the platform's y position (since x doesn't need to change)
 					m_animSprite.setPosition(
 						m_animSprite.getPosition().x,
@@ -334,7 +334,7 @@ void Player::collisionHandling(sf::Time& dt)
 					m_stomping = false;
 					m_movement.y = 0;
 					break;
-				}
+				//}
 			}
 
 			m_lastPlatformCollision++; // increase the number of platforms checked

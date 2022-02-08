@@ -30,6 +30,7 @@ Game::Game() :	m_window(sf::VideoMode(m_screenWidth, m_screenHeight), "Archer")
 
 	m_layerManagers.push_back(LayerManager(sf::Vector2f{ 0.0f, 0.0f }, m_player));
 	m_layerManagers.push_back(LayerManager(sf::Vector2f{ 1440.0f, 0.0f }, m_player));
+	m_layerManagers.push_back(LayerManager(sf::Vector2f{ 2880.0f, 0.0f }, m_player));
 
 	m_instructBg.setPosition(m_instructions.getPosition() - sf::Vector2f{ 10.0f, 10.0f });
 	m_instructBg.setSize(sf::Vector2f{ m_instructions.getGlobalBounds().width + 20.0f, m_instructions.getGlobalBounds().height + 20.0f });
@@ -199,16 +200,16 @@ void Game::render()
 		layerManager.renderTop(m_window);
 	}
 
+	for (auto platform : m_platforms)
+	{
+		platform->render(m_window);
+	}
+
 	m_player->render(m_window);
 	m_enemyManager->render(m_window);
 	
 	m_window.draw(m_instructBg);
 	m_window.draw(m_instructions);
-
-	for (auto platform : m_platforms)
-	{
-		platform->render(m_window);
-	}
 
 	m_bow->render();
 
